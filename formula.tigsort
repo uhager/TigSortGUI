@@ -1,0 +1,90 @@
+// part of TigSortGUI
+// author: Ulrike Hager
+// example configuration defining formulas, cuts, and data sorting
+tree	SharcEvents
+	sorter
+		name	DiCd1_max
+		inputs	DiCd1_F
+		what	maxValue
+	end
+	cut
+		name	DCd1_alphacut
+		inputs	DoCd1_value	DiCd1_max_value
+		tcutg	DCd_alphas.C	DCd_alphas
+	end
+	sorter
+		name	DiBx1_Bmax
+		inputs	DiBx1_B
+		what	maxValue
+	end
+	sorter
+		name	DiBx1_Fmax
+		inputs	DiBx1_F
+		what	maxValue
+	end
+	sorter
+		name	GeB_core
+		inputs	GeB
+		what	selectChannel
+		parameters		50	60	70	80	90	100	110	120	130	140	150	160		
+	end
+	sorter
+		name	GeW_core
+		inputs	GeW
+		what	selectChannel
+		parameters		50	60	70	80	90	100	110	120	130	140	150	160		
+	end
+	sorter
+		name	GeG_core
+		inputs	GeG
+		what	selectChannel
+		parameters		50	60	70	80	90	100	110	120	130	140	150	160		
+	end
+	sorter
+		name	GeR_core
+		inputs	GeR
+		what	selectChannel
+		parameters		50	60	70	80	90	100	110	120	130	140	150	160		
+	end
+	sorter
+		name	Ge_cores
+		inputs	GeB_core	GeW_core	GeG_core	GeR_core
+		what	combine
+	end
+	formula
+		name	DiCd1_theta
+		inputs	DiCd1_max_channel
+		equation		"atan( ( 9 + 1.9*rndm + [0]*2.0 )/ 78.0)"
+	end
+	lookup
+		name DiCd1_theta_LU
+		inputs	DiCd1_max_channel
+		xchannels	0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+		table		0.1269 0.1520 0.17698 0.2017 0.2262 0.2504 0.2743 0.2979 0.3212 0.3441 0.3666 0.3888 0.4105 0.43188 0.4528 0.4733
+	end
+	formula
+		name	DiBx1_theta
+		inputs	DiBx1_Bmax_channel	DiBx1_Fmax_channel
+		equation	"acos( (41.0+[0])/sqrt( 40.5*40.5 + (-34.5 + 3.0*[1] )* (-34.5 + 3.0*[1] ) + (41.0+[0])* (41.0+[0]) ))" 
+	end
+	sorter
+		name	DownstrTheta
+		inputs	DiCd1_theta	DiBx1_theta
+		what	combine
+	end
+	formula
+		name	DCd1_Energy
+		inputs	DiCd1_max_value DoCd1_value
+		equation	"[0]+[1]"
+	end
+	sorter
+		name	DownstrEnergy
+		inputs	DiCd1_max DiBx1_Fmax
+		what	combine
+	end
+	cut
+		name GeCore_larger50k
+		inputs Ge_cores_value
+		range  50000	200000
+	end
+end

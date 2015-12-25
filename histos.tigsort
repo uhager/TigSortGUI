@@ -1,0 +1,73 @@
+// part of TigSortGUI
+// author: Ulrike Hager
+// example configuration defining histograms
+tree	SharcEvents
+	histo
+		name  DCd1max_EdE
+		inputs     DoCd1_value	DiCd1_max_value
+		xbins 1024	0	160000
+		ybins 1024	0	160000
+	end
+	histo
+		name  DCd1max_EdE_alphacut
+		inputs     DoCd1_value	DiCd1_max_value
+		cuts	   DCd1_alphacut
+		xbins 1024	0	160000
+		ybins 1024	0	160000
+	end
+	histo
+		name  DCd1max_EdE_alphacut_GeCut
+		inputs     DoCd1_value	DiCd1_max_value
+		cuts	   DCd1_alphacut	GeCore_larger50k
+		xbins 1024	0	160000
+		ybins 1024	0	160000
+	end
+	histo
+		name  DCd1_EdE
+		inputs     DoCd1_value	DiCd1_F_value
+		xbins 1024	0	160000
+		ybins 1024	0	160000
+	end
+	histo
+		name  DCd1_EtotTheta
+		inputs     DiCd1_theta	DCd1_Energy
+		xbins 64	0	1
+		ybins 1024	0	160000
+	end
+	histo
+		name  DCd1_EtotTheta_alphas
+		inputs     DiCd1_theta	DCd1_Energy
+		cuts	   DCd1_alphacut
+		xbins 64	0	1
+		ybins 1024	0	160000
+	end
+	histo
+		name  DCd4_FvB
+		inputs     DiCd4_B_value	DiCd4_F_value
+		xbins 1024	0	160000
+		ybins 1024	0	160000
+	end
+	histo
+		name D_Etheta_cut
+		inputs   DownstrTheta	DownstrEnergy_value
+		cuts	   DCd1_alphacut
+		xbins 64	0	1
+		ybins 1024	0	160000
+	end
+	histo
+		name  GeCores_E
+		inputs     Ge_cores_value
+		xbins 2048	0	160000
+	end
+	histo
+		name  GeCores_E_cut
+		inputs     Ge_cores_value
+		cuts	   DCd1_alphacut
+		xbins 2048	0	160000
+	end
+	histo
+		name  GeB_Ch
+		inputs     GeB_channel
+		xbins 150	50	200
+	end
+end
