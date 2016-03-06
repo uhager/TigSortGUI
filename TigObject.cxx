@@ -9,12 +9,6 @@ TigObject::TigObject()
   ObjType = "Object";
 }
 
-TigObject::~TigObject()
-{
-  //  cout << "[TigObject::~TigObject] " << mName << endl;
-}
-
-
 bool
 TigObject::ParseInput(string line)
 {
@@ -23,27 +17,27 @@ TigObject::ParseInput(string line)
   istringstream stream(line.c_str());	
   stream >> token;
   //      cout << "[TigObject::ParseInput] " <<  mName << " token " << token << endl;
-      if ( token == "" || token[0] == '#') {
-	//	cout << "[TigObject::ParseInput] " <<  mName << " comment: " << line << endl;
- }  //comment or blank
-       else if ( token.compare("name") == 0)
-	{
-	  stream >> token;
-	  this->ChangeName(token);
-	  cout << " ..." << mName << "... ";
-	  return true;
-	}	
-      else if ( token.compare("description") == 0)
-	{
-	  stream >> token;
-	  this->ChangeDescription(token);
-	  return true;
-	}  
-       else {
-	 //	 cout << "[TigObject::ParseInput] unknown token " << token << endl;
-	 return false;
-       }
+  if ( token == "" || token[0] == '#') {
+    //	cout << "[TigObject::ParseInput] " <<  mName << " comment: " << line << endl;
+  }  //comment or blank
+  else if ( token.compare("name") == 0)
+    {
+      stream >> token;
+      this->ChangeName(token);
+      cout << " ..." << mName << "... ";
       return true;
- }
+    }	
+  else if ( token.compare("description") == 0)
+    {
+      stream >> token;
+      this->ChangeDescription(token);
+      return true;
+    }  
+  else {
+    //	 cout << "[TigObject::ParseInput] unknown token " << token << endl;
+    return false;
+  }
+  return true;
+}
 
 

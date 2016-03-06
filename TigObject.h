@@ -17,10 +17,9 @@ class TigObject
 {
  public:
   TigObject();
-  ~TigObject();
 
-  void ChangeDescription(string pDesc)	{ mDescription = pDesc; }
-  void ChangeName(string pName)			{ mName = pName; }
+  void ChangeDescription(string pDesc) { mDescription = pDesc; }
+  void ChangeName(string pName)	{ mName = pName; }
   string Description(){return mDescription;}
   string Name(void) { return mName; }
   virtual bool ParseInput(string line);

@@ -51,7 +51,7 @@ TigMidasHandler::HandleMidasEvent(TMidasEvent& pEvent)
 }
 
 void
-TigMidasHandler:: EventHandler(const void*pheader,const void*pdata,int size)
+TigMidasHandler::EventHandler(const void*pheader,const void*pdata,int size)
 {
   TMidasEvent event;
   memcpy(event.GetEventHeader(), pheader, sizeof(TMidas_EVENT_HEADER));

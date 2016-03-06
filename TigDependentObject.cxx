@@ -23,6 +23,7 @@ TigDependentObject::TigDependentObject(int num)
 TigDependentObject::~TigDependentObject()
 {
   //   cout << "[TigDependentObject::~TigDependentObject] " << mName << endl;
+  // nothing to do, all your pointer are belong to others.
 }
 
 void

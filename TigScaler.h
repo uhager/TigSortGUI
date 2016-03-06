@@ -32,11 +32,12 @@ class TigScaler : public TigDataObject
 
  protected:			//----- protected ------------------
   string mBank;
-  vector<int>	mRequested; //  channels requested
+  vector<int> mRequested; //  channels requested
   vector<string> mNames; // names for requested channels (branch names in tree)
 
  private:			//----- private --------------------
-
+  TigScaler( const TigScaler& );
+  TigScaler& operator=( const TigScaler& );
 };
 
 #endif /* TIGSCALER_H */

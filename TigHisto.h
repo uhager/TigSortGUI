@@ -16,7 +16,7 @@ class TigHisto :  public TigHistoObject //  public TigDataObject,
 {
  public:
   TigHisto();
-   ~TigHisto();
+
   virtual bool Evaluate();
   virtual bool Initialize();
   virtual bool ParseInput(string line);

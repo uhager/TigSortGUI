@@ -17,7 +17,6 @@ class TigScalerHisto :  public TigHistoObject //, public TigDataObject
 {
  public:
   TigScalerHisto();
-   ~TigScalerHisto();
   virtual bool Evaluate();
   virtual bool Initialize();
   virtual bool ParseInput(string line);

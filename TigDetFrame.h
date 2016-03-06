@@ -21,7 +21,7 @@ class TigDetFrame : public TGCompositeFrame
  public:
   TigDetFrame();
   TigDetFrame( const TGWindow *pWindow);
-  ~TigDetFrame(){}
+  ~TigDetFrame();
   void AddEntry(TigDataObject *obj, int id);
    void HandleButtons();
    void SetParent(TigFrame *p);
@@ -35,8 +35,11 @@ class TigDetFrame : public TGCompositeFrame
    TGLayoutHints *mLayout;
    TGCompositeFrame *mCompFrame; 
 
+ private:
+   TigDetFrame(const TigDetFrame&);
+   TigDetFrame& operator=(const TigDetFrame&);
+   
   ClassDef(TigDetFrame,0);
-
 };
 
 

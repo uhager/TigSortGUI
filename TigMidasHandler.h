@@ -15,7 +15,6 @@ class TigMidasHandler;
 #include <assert.h>
 #include <signal.h>
 
-//#include <TMidasOnline.h>
 #include <TMidasEvent.h>
 #include <TMidasFile.h>
 #include <XmlOdb.h>
@@ -30,7 +29,6 @@ class TigMidasHandler;
 #include <TROOT.h>
 #include <TTimer.h> 
 
-//#include <TigManager.h>
 
 class TigManager;
 
@@ -41,7 +39,9 @@ class TigMidasHandler
   //  RQ_OBJECT("TigMidasHandler")
  public:
   TigMidasHandler(TigManager *pParent);
-  virtual  ~TigMidasHandler() {};
+  virtual ~TigMidasHandler() {
+    CloseMidasFile();
+      }
   void CloseMidasFile();
   void EventHandler(const void *pheader,const void *pdata,int size);
   int OpenMidasFile(const char*fname);
@@ -59,6 +59,10 @@ class TigMidasHandler
   int mRunNumber;
   int mGuiInterval;
   int mHistoUpdateInterval;
+
+ private:
+  TigMidasHandler( const TigMidasHandler& );
+  TigMidasHandler& operator=( const TigMidasHandler& );
 };
 
 #endif

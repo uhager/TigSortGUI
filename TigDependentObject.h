@@ -57,7 +57,11 @@ class TigDependentObject : public TigDataObject
   vector<string> mInputNames;
   vector<pair<string,int> > mNeeded; //needed parameters as pairs of detector name and channel(0) or value(1)
   vector<pair<string,int> > mNeededCuts; //needed parameters as pairs of detector name and channel(0) or value(1)
- int mWhatToDo;
+  int mWhatToDo;
+
+ private:
+  TigDependentObject(const TigDependentObject&);
+  TigDependentObject& operator=(const TigDependentObject&);
 };
 
 

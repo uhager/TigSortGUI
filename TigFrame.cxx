@@ -248,9 +248,13 @@ TigFrame::AssembleOutFileNumbers(TList * files)
 void	
 TigFrame::CloseWindow(void)
 {
-	if (mCanvas) delete mCanvas;
-	delete mManager;
-	gApplication->Terminate(0);
+  delete mMenuBar;
+  delete mFrameMain;
+  
+  if (mCanvas) delete mCanvas;
+	
+  delete mManager;
+  gApplication->Terminate(0);
 }
 
 

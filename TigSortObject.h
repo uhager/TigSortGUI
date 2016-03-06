@@ -20,7 +20,6 @@ class TigSortObject : public TigDataObject
 {
  public:
   TigSortObject();
-  //  ~TigSortObject();
 
   //virtual  void Clear();
  virtual bool Evaluate();

@@ -13,12 +13,7 @@ TigCalibration::TigCalibration()
   ObjType = "Formula";
 }
 
-TigCalibration::~TigCalibration()
-{
-  //  cout << "[TigCalibration::~TigCalibration] " << mName << endl;
 
-  // cout << "[TigCalibration::~TigCalibration] done" << endl;
-}
 
 //--- Evaluate
 bool

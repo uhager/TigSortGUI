@@ -26,7 +26,6 @@ TigAssemble::~TigAssemble(void)
   vector<double*>::iterator pInt;
   for (pInt=mEventData.begin(); pInt<mEventData.end(); pInt++) delete[] (*pInt);
   mEventData.clear();
-  mWaveforms.clear();
   //  cout << "[TigAssemble::~TigAssemble] deleted" << endl;
 }
 
@@ -90,12 +89,15 @@ TigTree::TigTree(void)
 TigTree::~TigTree(void)
 {
   //  cout << "[TigTree::~TigTree] " << mName  << endl;
+  if (mInputChain) delete mInputChain;
   vector<TigDataObject*>::iterator detector;
   for (detector= mObjects.begin(); detector < mObjects.end(); detector++) delete (*detector);
   vector<TigAssemble*>::iterator assemble;
   for (assemble= mAssembled.begin(); assemble < mAssembled.end(); assemble++) delete (*assemble);
   mObjects.clear();
   mAssembled.clear();
+  DeleteHistos();
+  DeleteFormulas();
   //  mTree->Delete("all");
 }
 

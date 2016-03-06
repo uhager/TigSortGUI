@@ -14,14 +14,13 @@
 class TigUnpack
 {
  public:
-  TigUnpack(void);
-  virtual ~TigUnpack(void); 
+  TigUnpack();
+  virtual ~TigUnpack(){}; 
    int ProcessData(WORD* pData, long pMaxLength);
-protected:			//----- protected ------------------
- 
-private:			//----- private --------------------
- TigUnpack(const TigUnpack& pToCopy);
- TigUnpack&	operator = (const TigUnpack& pToCopy);
+
+ private:			//----- private --------------------
+   TigUnpack(const TigUnpack& );
+   TigUnpack& operator=(const TigUnpack& );
 
 };
 
@@ -29,14 +28,13 @@ private:			//----- private --------------------
 class TigMCSUnpack
 {
  public:
-  TigMCSUnpack(void);
-  virtual ~TigMCSUnpack(void); 
+  TigMCSUnpack();
+  virtual ~TigMCSUnpack(){}; 
    vector<int> ProcessData(WORD* pData, long pMaxLength);
-protected:			//----- protected ------------------
- 
-private:			//----- private --------------------
- TigMCSUnpack(const TigMCSUnpack& pToCopy);
- TigMCSUnpack&	operator = (const TigMCSUnpack& pToCopy);
+
+ private:			//----- private --------------------
+   TigMCSUnpack(const TigMCSUnpack& );
+   TigMCSUnpack& operator=(const TigMCSUnpack& );
 
 };
 

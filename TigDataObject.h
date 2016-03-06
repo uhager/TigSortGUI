@@ -79,7 +79,10 @@ virtual  void Clear();
  TigTree *mParent;
  int mWhatToDo;
 
-
+ private:
+ // prevent copying
+ TigDataObject(const TigDataObject&);
+ TigDataObject& operator=(const TigDataObject&);
 
 };
 

@@ -145,8 +145,8 @@ class TigTree : public TigObject
   vector<TigWaveformHisto*> mWfHistos;
 
  private:			//----- private --------------------
-  TigTree(const TigTree& pToCopy);
-  TigTree&				operator = (const TigTree& pToCopy);
+  TigTree(const TigTree& );
+  TigTree& operator = (const TigTree& );
 
   //  ClassDef(TigTree,0);
 

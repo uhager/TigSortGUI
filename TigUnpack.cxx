@@ -15,10 +15,6 @@ TigUnpack::TigUnpack(void)
 {
 }
 
-//---- ~TigUnpack
-TigUnpack::~TigUnpack(void)
-{
-}
 
 //---- ProcessData
 int
@@ -128,10 +124,6 @@ TigMCSUnpack::TigMCSUnpack(void)
 {
 }
 
-//---- ~TigMCSUnpack
-TigMCSUnpack::~TigMCSUnpack(void)
-{
-}
 
 //---- ProcessData
 vector<int>

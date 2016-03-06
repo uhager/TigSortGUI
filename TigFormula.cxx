@@ -88,7 +88,7 @@ TigFormula::Evaluate()
   // cout << endl;
 
   }
-  //  cout << "[TigFormula::Evaluate] done" << endl;
+ 
   return true;
 }
 
@@ -106,7 +106,7 @@ TigFormula::Initialize()
   // cout << "[TigFormula::Initialize] " << mName << endl;
   if (!mFormula) return false;
   bool check =  this->TigDataObject::Initialize();
- if (!check) return false;
+  if (!check) return false;
   if (mFormula->GetNpar() != mNeeded.size()) {
     cout << "[TigFormula::Initialize] parameter mismatch: needed " << mFormula->GetNpar() << " found: " <<mNeeded.size() << endl;
     return false;
@@ -148,7 +148,5 @@ TigFormula::SetFormula(string form)
     delete mFormula;
     mFormula = NULL;
   }
-  //  mFormula->Analyze();
-  //mFormula->Compile(); 
 }
 

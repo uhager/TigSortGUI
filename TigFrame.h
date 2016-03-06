@@ -92,8 +92,11 @@ TigManager*	mManager;
   TGTab *mTab;
   //  vector<TigDetFrame*> mDetFrames; 
   vector<TGCompositeFrame*> mTreeTabs;
-  /* TTimer *mTimer; */
-  /* int mTimerTime; */
+
+ private:
+  TigFrame(const TigFrame&);
+  TigFrame& operator=( const TigFrame& );
+
   ClassDef(TigFrame,0);
 
 };

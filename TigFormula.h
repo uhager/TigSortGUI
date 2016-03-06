@@ -3,9 +3,9 @@
 
 #include <vector>
 #include <string>
+
 #include <TFormula.h>
-//#include <TigObject.h>
-//#include <TigDataObject.h>
+
 #include <TigDataObject.h>
 
 using namespace std;
@@ -16,12 +16,17 @@ class TigFormula :  public TigDataObject
   TigFormula();
   ~TigFormula();
 
- virtual bool Evaluate();
+  virtual bool Evaluate();
   virtual void IncreaseDataLength(int);
- virtual bool Initialize();
+  virtual bool Initialize();
   virtual bool ParseInput(string line);
 
-   void SetFormula(string formula);
+  void SetFormula(string formula);
+   
  protected:
   TFormula *mFormula;
+
+ private:
+  TigFormula(const TigFormula&);
+  TigFormula& operator=( const TigFormula& );
 };

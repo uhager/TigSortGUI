@@ -78,8 +78,8 @@ lin_eq_type mLinEq;
   vector<short> mWaveform;
  
 private:			//----- private --------------------
-					TigEvent(const TigEvent& pToCopy);
-TigEvent&				operator = (const TigEvent& pToCopy);
+  TigEvent(const TigEvent& );
+  TigEvent& operator = (const TigEvent&);
 };
 
 #endif /* TIGEVENT_H */

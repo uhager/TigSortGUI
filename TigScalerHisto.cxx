@@ -15,10 +15,6 @@ TigScalerHisto::TigScalerHisto()
   mWhatToDo = SCALER_HISTO;
 }
 
-TigScalerHisto::~TigScalerHisto()
-{
-  //  if (mHisto) delete mHisto;
-}
 
 //---- Initialise
 bool

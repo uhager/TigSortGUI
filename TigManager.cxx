@@ -62,9 +62,11 @@ TigManager::TigManager(void)
 TigManager::~TigManager(void)
 {
   //  this->Clear();
+  DeleteTrees();
   delete mRootOutfile;
   delete mRunFiles;
   delete mUnpack;
+  delete mMCSUnpack;
   delete mMidasHandler;
   //  delete mFrame;
 }
@@ -84,7 +86,7 @@ TList *keys =  mRootInfile->GetListOfKeys();
    TObject *obj = mRootInfile->Get(key->GetName());
    if (obj->IsA() == TTree::Class()){
      TTree *pTree = (TTree*)obj;
-     TigTree*	 tree = new TigTree;
+     TigTree* tree = new TigTree;
        tree->SetParent(this);
      bool check = tree->ConfigFromRootTree(pTree);
      if (check) {

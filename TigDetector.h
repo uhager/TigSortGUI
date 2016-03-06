@@ -43,7 +43,11 @@ class TigDetector :  public TigDataObject
   vector<double>	mParameters; // parameters needed for waveform analysis, i.e. bins
    map<int,int> mAddresses; //mAddresses[address] = index
    map<int,int> mChannels; // mChannel[index] = detector strip, translation between mEventData and mEventChannel position
+
  private:			//----- private --------------------
+   TigDetector(const TigDetector&);
+   TigDetector& operator=(const TigDetector&);
+   
 };
 
 #endif /* TIGDETECTOR_H*/

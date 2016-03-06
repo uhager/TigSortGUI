@@ -15,7 +15,6 @@ class TigCalibration:  public TigDataObject
 {
  public:
   TigCalibration();
-  ~TigCalibration();
 
  virtual bool Evaluate();
  virtual void IncreaseDataLength(int);

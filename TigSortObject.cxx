@@ -12,9 +12,6 @@ TigSortObject::TigSortObject()
   ObjType = "Formula" ;
 }
 
-// TigSortObject::~TigSortObject() 
-// {
-// }
 
 /*
 void

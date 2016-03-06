@@ -11,12 +11,11 @@ class TigLookupTable:  public TigDataObject
 {
  public:
   TigLookupTable();
-  ~TigLookupTable();
-
+ 
   void AddTableLine(vector<double> pTable);
- virtual bool Evaluate();
+  virtual bool Evaluate();
   virtual void IncreaseDataLength(int);
- virtual bool Initialize();
+  virtual bool Initialize();
   virtual bool ParseInput(string line);
   void SetXChannels(vector<int> pChannels);
   void SetYChannels(vector<int> pChannels);

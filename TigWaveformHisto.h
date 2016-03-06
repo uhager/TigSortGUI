@@ -11,9 +11,9 @@ class TigWaveformHisto : public TigHistoObject
 {
  public:
   TigWaveformHisto();
-  ~TigWaveformHisto();
+  ~TigWaveformHisto(){};
   bool Evaluate(vector<short> pWf);
-  bool Initialize(void);
+  bool Initialize();
   virtual  bool ParseInput(string line);
   bool ProcessSignal(TigEvent* pEvent);
 

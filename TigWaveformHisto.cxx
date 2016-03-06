@@ -10,10 +10,6 @@ TigWaveformHisto::TigWaveformHisto()
   mChannel = -1;
 }
 
-TigWaveformHisto::~TigWaveformHisto()
-{
-  //  cout << "[TigWaveformHisto::~TigWaveformHisto] " << mName << endl;
-}
 
 bool 
 TigWaveformHisto::Evaluate(vector<short> pWf)
@@ -25,8 +21,9 @@ TigWaveformHisto::Evaluate(vector<short> pWf)
 
 //---- Initialize
 bool
-TigWaveformHisto::Initialize(void)
+TigWaveformHisto::Initialize()
 {
+
   bool check = this->TigDataObject::Initialize();
   if (!check) return false;
   if (mInputNames.size() > 1){

@@ -22,7 +22,10 @@ virtual   ~TigHistoObject();
 
  protected:
   TH1* mHisto;
- 
+
+ private:
+  TigHistoObject( const TigHistoObject& );
+  TigHistoObject& operator=( const TigHistoObject& );
  
 };
 

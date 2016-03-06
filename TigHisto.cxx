@@ -13,9 +13,6 @@ TigHisto::TigHisto()
 
 }
 
-TigHisto::~TigHisto()
-{
-}
 
 //---- Initialise
 bool

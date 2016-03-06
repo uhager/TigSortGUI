@@ -27,6 +27,10 @@ class TigCut : public TigDataObject
   string mCutName;
   int mMinRange, mMaxRange;
 
+ private:
+  //! no copying, doesn't make sense to have the same cut
+  TigCut(const TigCut&);
+  TigCut& operator=(const TigCut&);
 };
 
 

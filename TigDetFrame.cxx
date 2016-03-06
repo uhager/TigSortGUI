@@ -14,6 +14,10 @@ using namespace std;
 TigDetFrame::TigDetFrame()
 {
   //  this->Init();
+  mContainer = NULL;
+  mLayout = NULL;
+  mViewer = NULL;
+  mCompFrame = NULL;
 }
 
 TigDetFrame::TigDetFrame(const TGWindow *pWindow)
@@ -21,6 +25,23 @@ TigDetFrame::TigDetFrame(const TGWindow *pWindow)
 {
   mNumCols = 2;
   //  this->Init();
+  mContainer = NULL;
+  mLayout = NULL;
+  mViewer = NULL;
+  mCompFrame = NULL;
+}
+
+
+TigDetFrame::~TigDetFrame()
+{
+  if (mCompFrame)
+    delete mCompFrame;
+  if (mContainer)
+    delete mContainer;
+  if (mViewer)
+    delete mViewer;
+  if (mLayout)
+    delete mLayout;
 }
 
 

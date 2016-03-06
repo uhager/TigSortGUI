@@ -14,9 +14,6 @@ TigLookupTable::TigLookupTable()
   }
 }
 
-TigLookupTable::~TigLookupTable()
-{
-}
 
 void
 TigLookupTable::AddTableLine(vector<double> pTable)
