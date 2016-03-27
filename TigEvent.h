@@ -9,7 +9,6 @@
 #include <string>
 
 
-using namespace std;
 
 const int LIN_EQ_DIM=3;
 
@@ -32,12 +31,12 @@ public:				//----- public ---------------------
   int Address(){return mAddress;}
   void AddWfSample(int pSample);
   double CalcCFDTimeDiff();
-  double CalcWfBase(vector<double> pParameters);
-  double CalcWfEnergy(vector<double> pParameters);
+  double CalcWfBase(std::vector<double> pParameters);
+  double CalcWfEnergy(std::vector<double> pParameters);
   int CalcWfMaxBin();
   int CalcWfMinBin();
-  double CalcWfPeak(vector<double> pParameters);
-  double CalcWfSinePhase(vector<double> pParameters);
+  double CalcWfPeak(std::vector<double> pParameters);
+  double CalcWfSinePhase(std::vector<double> pParameters);
   int CFD(){return mCFD;}
   int Charge(){return mCharge;}
   int EventID(){return mEventID;}
@@ -60,8 +59,8 @@ public:				//----- public ---------------------
   int TimestampUp(){return mTimestampUp;}
   int TriggersAccepted(){return mTriggersAccepted;}
   int TriggersRequested(){return mTriggersRequested;}
-  double Value(int pDataType, vector<double> pParameters);
-  vector<short> Waveform(){return mWaveform;}
+  double Value(int pDataType, std::vector<double> pParameters);
+  std::vector<short> Waveform(){return mWaveform;}
 
 protected:			//----- protected ------------------
   int mAddress;
@@ -75,7 +74,7 @@ lin_eq_type mLinEq;
   int mTimestampUp;
   int mTriggersAccepted;
   int mTriggersRequested;
-  vector<short> mWaveform;
+  std::vector<short> mWaveform;
  
 private:			//----- private --------------------
   TigEvent(const TigEvent& );

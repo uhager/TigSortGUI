@@ -5,7 +5,8 @@
 #define TIGUNPACK_H
 
 #include <stdint.h>
-#include <TigEvent.h>
+
+#include "TigEvent.h"
 
 #ifndef WORD
 #define WORD uint32_t
@@ -30,7 +31,7 @@ class TigMCSUnpack
  public:
   TigMCSUnpack();
   virtual ~TigMCSUnpack(){}; 
-   vector<int> ProcessData(WORD* pData, long pMaxLength);
+  std::vector<int> ProcessData(WORD* pData, long pMaxLength);
 
  private:			//----- private --------------------
    TigMCSUnpack(const TigMCSUnpack& );

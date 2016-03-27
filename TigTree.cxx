@@ -3,9 +3,14 @@
 
 #include <sstream>
 #include <iostream>
-#include <TigTree.h>
-#include <TigManager.h>
-#include <TigObject.h>
+
+#include "TigTree.h"
+#include "TigManager.h"
+#include "TigObject.h"
+
+
+using std::vector;
+using std::string;
 
 static const long gIndexOffset = 4; //offset in tree for TigSort EventID, Trigger EventID, runN, timestamp
 
@@ -26,7 +31,7 @@ TigAssemble::~TigAssemble(void)
   vector<double*>::iterator pInt;
   for (pInt=mEventData.begin(); pInt<mEventData.end(); pInt++) delete[] (*pInt);
   mEventData.clear();
-  //  cout << "[TigAssemble::~TigAssemble] deleted" << endl;
+  //  std::cout << "[TigAssemble::~TigAssemble] deleted" << std::endl;
 }
 
 //---- AddData
@@ -88,7 +93,7 @@ TigTree::TigTree(void)
 //---- ~TigTree
 TigTree::~TigTree(void)
 {
-  //  cout << "[TigTree::~TigTree] " << mName  << endl;
+  //  std::cout << "[TigTree::~TigTree] " << mName  << std::endl;
   if (mInputChain) delete mInputChain;
   vector<TigDataObject*>::iterator detector;
   for (detector= mObjects.begin(); detector < mObjects.end(); detector++) delete (*detector);
@@ -115,12 +120,12 @@ TigTree::AddEvent(int pEventID)
   int result;
   for (result=0; result<mAssembled.size(); result++){
     if ( (mAssembled.at(result))->EventID() == pEventID ){
-      //cout << "[TigTree::AddEvent] found event " << (mAssembled.at(result))->eventID << " at " << result <<endl;
+      //std::cout << "[TigTree::AddEvent] found event " << (mAssembled.at(result))->eventID << " at " << result <<std::endl;
       return result;
     }
   }
   mAssembled.push_back(new TigAssemble());
-  //  cout << "[TigTree::AddEvent]  new event " << mAssembled.size() << endl;
+  //  std::cout << "[TigTree::AddEvent]  new event " << mAssembled.size() << std::endl;
   mAssembled.back()->SetEventID(pEventID);
   vector<TigDataObject*>::iterator detector;
   for (detector= mObjects.begin(); detector < mObjects.end(); detector++) {
@@ -170,7 +175,7 @@ TigTree::BranchCount(void) const
 bool 
 TigTree::ConfigFromRootTree(TTree *pTree)
 {
-  //  cout << "[TigTree::ConfigFromRootTree] " << pTree->GetName() << endl;
+  //  std::cout << "[TigTree::ConfigFromRootTree] " << pTree->GetName() << std::endl;
   this->ChangeName(pTree->GetName() );
   if (mInputChain) delete mInputChain;
   mInputChain = new TChain(pTree->GetName());
@@ -198,7 +203,7 @@ TigTree::ConfigFromRootTree(TTree *pTree)
     bool exists = true;
     TigDataObject *dobj =  this->FindDataObject(name);
     if (dobj ==NULL) {
-      //      cout << "[TigTree::ConfigFromRootTree] new object " << name << endl;
+      //      std::cout << "[TigTree::ConfigFromRootTree] new object " << name << std::endl;
       exists = false;
       dobj = new TigDataObject();
       //  pTree->SetBranchAddress(name.c_str(),&(dobj->Data));
@@ -217,7 +222,7 @@ TigTree::ConfigFromRootTree(TTree *pTree)
     else if (dobj->DataSize() < 2) dobj->SetNumData(1);
     if (exists == false) mObjects.push_back(dobj);
   }
-  //  cout << "[TigTree::ConfigFromRootTree] " << pTree->GetName() << " finished objects"<< endl;
+  //  std::cout << "[TigTree::ConfigFromRootTree] " << pTree->GetName() << " finished objects"<< std::endl;
   this->Initialize();
   return true;
 }
@@ -226,7 +231,7 @@ TigTree::ConfigFromRootTree(TTree *pTree)
 void
 TigTree::ConnectFormulas()
 {
-  //  cout << "[TigTree::ConnectFormulas]" << endl;
+  //  std::cout << "[TigTree::ConnectFormulas]" << std::endl;
   vector<TigDataObject*> depend;
   depend.insert(depend.begin(),mObjects.begin(),mObjects.end());
   depend.insert(depend.end(),mHistos.begin(), mHistos.end());
@@ -234,78 +239,78 @@ TigTree::ConnectFormulas()
   vector<TigDataObject*>:: iterator iter;
   //  for (int i=0; i<mFormulas.size(); i++){
   for (iter = depend.begin(); iter != depend.end();){
-    //   cout << "[TigTree::ConnectFormulas] object " << (*iter)->Name() << " descr " << (*iter)->Description() << endl;
+    //   std::cout << "[TigTree::ConnectFormulas] object " << (*iter)->Name() << " descr " << (*iter)->Description() << std::endl;
     bool deleteMe = false;
-    vector<pair<string,int> > needed = (*iter)->NeededParameters();
-    //  cout << "[TigTree::ConnectFormulas] # needed " << needed.size()  << endl;
+    vector<std::pair<string,int> > needed = (*iter)->NeededParameters();
+    //  std::cout << "[TigTree::ConnectFormulas] # needed " << needed.size()  << std::endl;
     for (int j=0; j<needed.size(); j++) {
-      //      cout << "[TigTree::ConnectFormulas] needed " << needed.at(j).first << " - ch/v " << needed.at(j).second  << endl;
+      //      std::cout << "[TigTree::ConnectFormulas] needed " << needed.at(j).first << " - ch/v " << needed.at(j).second  << std::endl;
       if (deleteMe) continue;
       vector<TigDataObject*>::iterator iObj;
       for (iObj = mObjects.begin(); iObj < mObjects.end(); iObj++){
 	if ( (needed.at(j).first).compare( (*iObj)->Name() ) == 0) {
 	  if ((*iObj)->DataSize() < needed.at(j).second ){
-	    cerr << "[TigTree::ConnectFormulas] DataInput " << needed.at(j).first << " for formula " << (*iter)->Name() << " has wrong size" <<endl;
+	    std::cerr << "[TigTree::ConnectFormulas] DataInput " << needed.at(j).first << " for formula " << (*iter)->Name() << " has wrong size" <<std::endl;
 	    deleteMe = true;
 	    continue;
 	  }
 	  
 	  (*iter)->InputData.at(j) = ((*iObj)->Data.at( needed.at(j).second ));
-	  //	  cout << "[TigTree::ConnectFormulas] connected input " << (*iter)->Name() << " to output " << (*iObj)->Name() << " pointers: in " << (*iter)->InputData.at(j) << " out " << (*iObj)->Data.at( needed.at(j).second ) << endl;
+	  //	  std::cout << "[TigTree::ConnectFormulas] connected input " << (*iter)->Name() << " to output " << (*iObj)->Name() << " pointers: in " << (*iter)->InputData.at(j) << " out " << (*iObj)->Data.at( needed.at(j).second ) << std::endl;
 	  ((*iter)->InputUpdated).at(j) = ((*iObj)->IsUpdated) ;
 	  (*iter)->IncreaseDataLength((*iObj)->DataLength())  ;
-	  //	  cout << "[TigTree::ConnectFormulas] found det " <<  (*iObj)->Name() << endl;
+	  //	  std::cout << "[TigTree::ConnectFormulas] found det " <<  (*iObj)->Name() << std::endl;
 	  break;
 	}
       }
       if (iObj == mObjects.end()) {
-	cerr << "[TigTree::ConnectFormulas] can't find input " << needed.at(j).first << " for formula " << (*iter)->Name() << endl;
+	std::cerr << "[TigTree::ConnectFormulas] can't find input " << needed.at(j).first << " for formula " << (*iter)->Name() << std::endl;
 	deleteMe = true;
       }
     }
 
     needed = (*iter)->NeededCuts();
-    //    cout << "[TigTree::ConnectFormulas] # needed " << needed.size()  << endl;
+    //    std::cout << "[TigTree::ConnectFormulas] # needed " << needed.size()  << std::endl;
     for (int j=0; j<needed.size(); j++) {
-      //       cout << "[TigTree::ConnectFormulas] needed " << needed.at(j).first << " - ch/v " << needed.at(j).second  << endl;
+      //       std::cout << "[TigTree::ConnectFormulas] needed " << needed.at(j).first << " - ch/v " << needed.at(j).second  << std::endl;
       if (deleteMe) continue;
       vector<TigDataObject*>::iterator iObj;
       for (iObj = mObjects.begin(); iObj < mObjects.end(); iObj++){
 	if ( (needed.at(j).first).compare( (*iObj)->Name() ) == 0) {
 	  if ((*iObj)->DataSize() < needed.at(j).second ){
-	    cerr << "[TigTree::ConnectFormulas] DataInput " << needed.at(j).first << " for cut " << (*iter)->Name() << " has wrong size" <<endl;
+	    std::cerr << "[TigTree::ConnectFormulas] DataInput " << needed.at(j).first << " for cut " << (*iter)->Name() << " has wrong size" <<std::endl;
 	    deleteMe = true;
 	    continue;
 	  }
 	  (*iter)->CutData.at(j) = ((*iObj)->Data.at( needed.at(j).second ));
-	  //	     cout << "[TigTree::ConnectFormulas] found det " <<  (*iObj)->Name() << endl;
+	  //	     std::cout << "[TigTree::ConnectFormulas] found det " <<  (*iObj)->Name() << std::endl;
 	  break;
 	}
       }
       if (iObj == mObjects.end()) {
-	cerr << "[TigTree::ConnectFormulas] can't find cut " << needed.at(j).first << " for  " << (*iter)->Name() << endl;
+	std::cerr << "[TigTree::ConnectFormulas] can't find cut " << needed.at(j).first << " for  " << (*iter)->Name() << std::endl;
 	deleteMe = true;
       }
     }
     //    (*iter)->SizeDetermined = true;
     if (deleteMe)  {
-      //  cout << "[TigTree::ConnectFormulas] delete me  " <<  (*iter)->Name() << endl;
+      //  std::cout << "[TigTree::ConnectFormulas] delete me  " <<  (*iter)->Name() << std::endl;
       DeleteObject((*iter)->Name());
       //      delete * iter;
-      // cout << "[TigTree::ConnectFormulas] deleted me  " << endl;
+      // std::cout << "[TigTree::ConnectFormulas] deleted me  " << std::endl;
       iter = depend.erase(iter);
-      // cout << "[TigTree::ConnectFormulas] erased me  "  << endl;
+      // std::cout << "[TigTree::ConnectFormulas] erased me  "  << std::endl;
     }
     else ++iter;
   }
-  // cout << "[TigTree::ConnectFormulas] done" << endl;
+  // std::cout << "[TigTree::ConnectFormulas] done" << std::endl;
 }
 
 //---- DeleteHistos
 void 
 TigTree::DeleteFormulas()
 {
-  //  cout << "[TigTree::DeleteFormulas]" << endl;
+  //  std::cout << "[TigTree::DeleteFormulas]" << std::endl;
   // vector<TigDependentObject*>::iterator obj;
   // for (obj=mFormulas.begin(); obj<mFormulas.end(); ){
   //   delete * obj;
@@ -315,24 +320,24 @@ TigTree::DeleteFormulas()
   vector<TigDataObject*>::iterator iObj;
   for (iObj = mObjects.begin(); iObj != mObjects.end();){
     if ( (*iObj)->ObjType == "Formula" ) {
-      //      cout << "[TigTree::DeleteFormulas] deleting " << (*iObj)->Name()<< endl;
+      //      std::cout << "[TigTree::DeleteFormulas] deleting " << (*iObj)->Name()<< std::endl;
       delete (*iObj);
-      //      cout << "[TigTree::DeleteFormulas] deleted " << endl;
+      //      std::cout << "[TigTree::DeleteFormulas] deleted " << std::endl;
       iObj = mObjects.erase(iObj);
-      //      cout << "[TigTree::DeleteFormulas] erased " << endl;
+      //      std::cout << "[TigTree::DeleteFormulas] erased " << std::endl;
     }
     else ++iObj;
   }
-  //  cout << "[TigTree::DeleteFormulas] cleared mFormulas, now reconnecting" << endl;
+  //  std::cout << "[TigTree::DeleteFormulas] cleared mFormulas, now reconnecting" << std::endl;
   this->ConnectFormulas();
-  //  cout << "[TigTree::DeleteFormulas]  reconnected" << endl;
+  //  std::cout << "[TigTree::DeleteFormulas]  reconnected" << std::endl;
 }
 
 //---- DeleteHistos
 void 
 TigTree::DeleteHistos()
 {
-  //  cout << "[TigTree::DeleteHistos]" << endl;
+  //  std::cout << "[TigTree::DeleteHistos]" << std::endl;
   vector<TigHistoObject*>::iterator obj;
   for (obj=mHistos.begin(); obj < mHistos.end(); obj++) delete (*obj);
   mHistos.clear();
@@ -346,30 +351,30 @@ TigTree::DeleteHistos()
 void 
 TigTree::DeleteObject(string name)
 {
-  //  cout << "[TigTree::DeleteObject]" << endl ;
+  //  std::cout << "[TigTree::DeleteObject]" << endl ;
   vector<TigDataObject*>::iterator obj1;
   for (obj1=mObjects.begin(); obj1 < mObjects.end(); obj1++){
     if ( name.compare( (*obj1)->Name() ) == 0) {
-      //      cout << "[TigTree::DeleteObject] found object"  << endl ;
+      //      std::cout << "[TigTree::DeleteObject] found object"  << endl ;
       delete (*obj1);
-      // cout << "[TigTree::DeleteObject] deleted"  << endl ;
+      // std::cout << "[TigTree::DeleteObject] deleted"  << endl ;
       mObjects.erase(obj1);
-      //cout << "[TigTree::DeleteObject] erased"  << endl ;
+      //std::cout << "[TigTree::DeleteObject] erased"  << endl ;
       return;
     }
   }
   vector<TigHistoObject*>::iterator obj2;
   for (obj2=mHistos.begin(); obj2<mHistos.end(); obj2++) {
     if ( name.compare( (*obj2)->Name() ) == 0) {
-      //   cout << "[TigTree::DeleteObject] found object"  << endl ;
+      //   std::cout << "[TigTree::DeleteObject] found object"  << endl ;
       delete (*obj2);
-      // cout << "[TigTree::DeleteObject] deleted"  << endl ;
+      // std::cout << "[TigTree::DeleteObject] deleted"  << endl ;
       mHistos.erase(obj2);
-      //  cout << "[TigTree::DeleteObject] erased"  << endl ;
+      //  std::cout << "[TigTree::DeleteObject] erased"  << endl ;
       return;
     }
   }
-  //  cout << "[TigTree::DeleteObject] " << name << " not found" << endl ;
+  //  std::cout << "[TigTree::DeleteObject] " << name << " not found" << endl ;
 
 }
 
@@ -386,7 +391,7 @@ TigTree::DetectorNames()
 bool
 TigTree::FillTree()
 {
-  //  cout << "[TigTree::FillTree()] " << mName << endl;
+  //  std::cout << "[TigTree::FillTree()] " << mName << std::endl;
   if ( !mHasEventData ) return false;
   mRunNumber = TigManager::Instance().RunNumber();
   mAnaEventID = TigManager::Instance().AnaEventID();
@@ -405,40 +410,40 @@ TigTree::FillTree()
 bool
 TigTree::FillTree(TigAssemble* pAssembled)
 {
-  //  cout << "[TigTree::FillTree(TigAssemble* pAssembled)] " << mName << endl;
+  //  std::cout << "[TigTree::FillTree(TigAssemble* pAssembled)] " << mName << std::endl;
   mAnaEventID = pAssembled->AnaEventID();
   mTrigEventID = pAssembled->EventID();
   mRunNumber = pAssembled->RunNumber();
   mTimeStamp = pAssembled->TimeStamp();
   /* have to find a better way to match detectors to assembled...
      if (mDetectors.size() != pAssembled->Size() ){
-     cerr << "[TigTree::FillTree] detector size mismatch" << endl;
+     std::cerr << "[TigTree::FillTree] detector size mismatch" << std::endl;
      return 0;
      }
   */
-  //   cout << "[TigTree::FillTree] detector loop " << endl;;
+  //   std::cout << "[TigTree::FillTree] detector loop " << std::endl;;
   for (int i =0; i<mObjects.size(); i++){
     if (mObjects.at(i)->ObjType == "Detector") {
       double* detData = pAssembled->Data(i);
       TigDetector *det = (TigDetector*)(mObjects.at(i));
       bool process = det->ProcessEvent(detData);
-      if (process == false ) cerr << "[TigTree::FillTree] event size mismatch" << endl;
+      if (process == false ) std::cerr << "[TigTree::FillTree] event size mismatch" << std::endl;
     }
     else if (mObjects.at(i)->ObjType == "Formula") {
       mObjects.at(i)->Evaluate();
     }
-    //    cout << "[TigTree::FillTree] DataSize " << mObjects.at(i)->Name() << " - " << mObjects.at(i)->Data->Size() << endl; 
+    //    std::cout << "[TigTree::FillTree] DataSize " << mObjects.at(i)->Name() << " - " << mObjects.at(i)->Data->Size() << std::endl; 
   }
-  //   cout << "[TigTree::FillTree] fill tree " << mName<< endl;;
+  //   std::cout << "[TigTree::FillTree] fill tree " << mName<< std::endl;;
   bool updatedHisto = false;
   if (GenerateTree) mTree->Fill();
   else {
     for (int i =0; i<mHistos.size(); i++) if (mHistos.at(i)->WhatToDo() != SCALER_HISTO ) if (mHistos.at(i)->Evaluate()) updatedHisto = true;
     for (int i=0; i<mWfHistos.size(); i++) if (mWfHistos.at(i)->Evaluate(pAssembled->Waveform(i))) updatedHisto = true;
   }
-  //   cout << "[TigTree::FillTree] reset detectors " << endl;;
+  //   std::cout << "[TigTree::FillTree] reset detectors " << std::endl;;
   for (int i = 0; i<mObjects.size(); i++) mObjects[i]->Clear();
-  //   cout << "[TigTree::FillTree] done" << endl;
+  //   std::cout << "[TigTree::FillTree] done" << std::endl;
   if (mStepFile && updatedHisto)  mParent->StopRunning();
   return 1;
 }
@@ -519,7 +524,7 @@ TigTree::GetAddress(string pDetName, int pChannel)
 int
 TigTree::GetDataSize(string dataObj)
 {
-  //  cout << "[TigTree::GetDataSize] for " << dataObj << endl; 
+  //  std::cout << "[TigTree::GetDataSize] for " << dataObj << std::endl; 
   vector<TigDataObject*>::iterator iObj;
   for (iObj = mObjects.begin(); iObj < mObjects.end(); iObj++){
     if (dataObj.compare( (*iObj)->Name() ) == 0)   return (*iObj)->DataSize();
@@ -554,15 +559,15 @@ TigTree::HistoNames()
 TH1 *
 TigTree::Histogram(int histN)
 {
-  //  cout << "[TigTree::Histogram]" << endl;
+  //  std::cout << "[TigTree::Histogram]" << std::endl;
   vector<TigHistoObject*> histos;
   histos.insert(histos.begin(),mHistos.begin(), mHistos.end());
   histos.insert(histos.end(),mWfHistos.begin(), mWfHistos.end());
   if ( histN > histos.size() ){
-    cerr << "[TigTree::Histogram] index out of range " << histN << endl;
+    std::cerr << "[TigTree::Histogram] index out of range " << histN << std::endl;
     return NULL;
   }
-  //  cout << "[TigTree::Histogram] found "<<  mHistos.at(histN)->Name() << endl;
+  //  std::cout << "[TigTree::Histogram] found "<<  mHistos.at(histN)->Name() << std::endl;
   return histos.at(histN)->Histogram();
 }
 
@@ -570,7 +575,7 @@ TigTree::Histogram(int histN)
 void 
 TigTree::InitInputChainAddresses()
 {
-  //  cout << "[TigTree::InitInputChainAddresses]" << endl;
+  //  std::cout << "[TigTree::InitInputChainAddresses]" << std::endl;
   mInputChain->SetBranchAddress("RunNumber",&mRunNumber);
   mInputChain->SetBranchAddress("AnalyserEventID",&mAnaEventID);
   mInputChain->SetBranchAddress("MidasTimeStamp",&mTimeStamp);
@@ -616,7 +621,7 @@ TigTree::InitInputChainAddresses()
 void
 TigTree::Initialize(void)
 {
-  //  cout << "[TigTree::Initialize]" << endl;
+  //  std::cout << "[TigTree::Initialize]" << std::endl;
   mTree = new TTree(mName.c_str(), mDescription.c_str());
   mTree->SetDirectory(0);
   // if (!(mParent->mHasRootConfig)){
@@ -628,7 +633,7 @@ TigTree::Initialize(void)
   vector<TigDataObject*>::iterator detector;
   for (detector= mObjects.begin(); detector < mObjects.end(); detector++)
     {
-      //      cout << "[TigTree::Initialize] " << (*detector)->Name() << " data size " << (*detector)->DataSize() << endl;
+      //      std::cout << "[TigTree::Initialize] " << (*detector)->Name() << " data size " << (*detector)->DataSize() << std::endl;
       if ( (*detector)->mWriteToTree ){
 	if ((*detector)->ObjType == "Scaler") {
 	  if (mTree->FindBranch("ScalerEventID") == 0) mTree->Branch("ScalerEventID",&mScEventID,"ScalerEventID/I");
@@ -662,12 +667,12 @@ TigTree::Initialize(void)
   //  mTree->MakeSelector("TigSelector");
   mTree->SetAutoSave();
   mScEventID = 0;
-  //  cout << "[TigTree::Initialize] done" << endl;
+  //  std::cout << "[TigTree::Initialize] done" << std::endl;
 }
 
   //---- ParseCalibration
   void 
-    TigTree::ParseCalibration(istream& pStream)
+  TigTree::ParseCalibration(std::istream& pStream)
   {
     TigCalibration *calib = new TigCalibration();
     string line, token;
@@ -678,12 +683,12 @@ TigTree::Initialize(void)
       {
 	bool check = calib->ParseInput(line);
 	if (!check){
-	  istringstream stream(line.c_str());	
+	  std::istringstream stream(line.c_str());	
 	  stream >> token;
 	  if ( token.compare("end") == 0)
 	    bail = true;
 	  else
-	    cerr << "[TigTree::ParseCalibration] Unknown token " << token << endl;
+	    std::cerr << "[TigTree::ParseCalibration] Unknown token " << token << std::endl;
 	}
 	if ( !bail)
 	  getline(pStream,line);
@@ -696,7 +701,7 @@ TigTree::Initialize(void)
 
 //---- ParseCut
 void 
-TigTree::ParseCut(istream& pStream)
+TigTree::ParseCut(std::istream& pStream)
 {
   TigCut *cut = new TigCut();
   string line, token;
@@ -706,12 +711,12 @@ TigTree::ParseCut(istream& pStream)
     {
       bool check = cut->ParseInput(line);
       if (!check){
-	istringstream stream(line.c_str());	
+	std::istringstream stream(line.c_str());	
       stream >> token;
       if ( token.compare("end") == 0)
 	bail = true;
       else
-	cerr << "[TigTree::ParseCut] Unknown token " << token << endl;
+	std::cerr << "[TigTree::ParseCut] Unknown token " << token << std::endl;
       }
       if ( !bail)
 	getline(pStream,line);
@@ -724,9 +729,9 @@ TigTree::ParseCut(istream& pStream)
 
 //---- ParseDetector
 void
-TigTree::ParseDetector(istream& pStream)
+TigTree::ParseDetector(std::istream& pStream)
 {
-  // cout << "[TigTree::ParseDetector]" << endl;
+  // std::cout << "[TigTree::ParseDetector]" << std::endl;
   string line;
   bool	 bail = false;
   TigDetector*	 det = new TigDetector();
@@ -736,7 +741,7 @@ TigTree::ParseDetector(istream& pStream)
     {
       bool check = det->ParseInput(line);
       if (!check){
-	istringstream stream(line.c_str());	
+	std::istringstream stream(line.c_str());	
 	string token;
       stream >> token;
       if ( token.compare("end") == 0)
@@ -750,7 +755,7 @@ TigTree::ParseDetector(istream& pStream)
 	      bool check = det->ParseSignal(line);
 	      if (!check) {
 		bailSignals = true;
-		//cout << "[TigTree::ParseDetector] " << det->Name() << " end of signals" << endl;
+		//std::cout << "[TigTree::ParseDetector] " << det->Name() << " end of signals" << std::endl;
 	      }	
 	      if ( !bailSignals)
 		getline(pStream,line);
@@ -758,7 +763,7 @@ TigTree::ParseDetector(istream& pStream)
     }
 
       else
-	cerr << "[TigTree::ParseDetector] Unknown token " << token << endl;
+	std::cerr << "[TigTree::ParseDetector] Unknown token " << token << std::endl;
       }
       if ( !bail)
 	getline(pStream,line);
@@ -768,20 +773,20 @@ TigTree::ParseDetector(istream& pStream)
    bool check = det->Initialize();
    if (check)  mObjects.push_back(det);
    else delete det;
-   //   cout << "[TigTree::ParseDetector] new detector: " << det->Name() << " #signals: " << det->DataLength() << endl;
+   //   std::cout << "[TigTree::ParseDetector] new detector: " << det->Name() << " #signals: " << det->DataLength() << std::endl;
 }
 
 
 //---- ParseFormHist
 void 
-TigTree::ParseFormHist(istream& pStream)
+TigTree::ParseFormHist(std::istream& pStream)
 {
   string line, token;
   bool	 bail = false;
   getline(pStream,line);
   while ( pStream && !bail)
     {
-      istringstream stream(line.c_str());	
+      std::istringstream stream(line.c_str());	
       stream >> token;
       if ( token == "" || token[0] == '#') {}	  //comment or blank
       else if ( token.compare("end") == 0)
@@ -819,19 +824,19 @@ TigTree::ParseFormHist(istream& pStream)
 	  this->ParseLookup(pStream);
 	}	  
        else 
-	cerr << "[TigTree::ParseFormHist] Unknown token " << token << endl;
+	std::cerr << "[TigTree::ParseFormHist] Unknown token " << token << std::endl;
       if ( !bail)
 	getline(pStream,line);
     }
-  // cout << "[TigTree::ParseFormHist] parsing done" << endl;
+  // std::cout << "[TigTree::ParseFormHist] parsing done" << std::endl;
   this->ConnectFormulas();
  }
 
 //---- ParseFormula
 void 
-TigTree::ParseFormula(istream& pStream)
+TigTree::ParseFormula(std::istream& pStream)
 {
-  //  cout << "[TigTree::ParseFormula] "  << endl;
+  //  std::cout << "[TigTree::ParseFormula] "  << std::endl;
   TigFormula *form = new TigFormula();
   string line, token;
   bool	 bail = false;
@@ -840,12 +845,12 @@ TigTree::ParseFormula(istream& pStream)
     {
       bool check = form->ParseInput(line);
       if (!check){
-	istringstream stream(line.c_str());	
+	std::istringstream stream(line.c_str());	
       stream >> token;
       if ( token.compare("end") == 0)
 	bail = true;
       else
-	cerr << "[TigTree::ParseFormula] Unknown token " << token << endl;
+	std::cerr << "[TigTree::ParseFormula] Unknown token " << token << std::endl;
       }
       if ( !bail)
 	getline(pStream,line);
@@ -854,13 +859,13 @@ TigTree::ParseFormula(istream& pStream)
    bool check = form->Initialize();
    if (check)  mObjects.push_back(form);
    else delete form;
-   //  cout << "[TigTree::ParseFormula] done "  << endl;
+   //  std::cout << "[TigTree::ParseFormula] done "  << std::endl;
 }
 
 void 
-TigTree::ParseLookup(istream& pStream)
+TigTree::ParseLookup(std::istream& pStream)
 {
-  //  cout << "[TigTree::ParseFormula] "  << endl;
+  //  std::cout << "[TigTree::ParseFormula] "  << std::endl;
   TigLookupTable *form = new TigLookupTable();
   string line, token;
   bool	 bail = false;
@@ -869,12 +874,12 @@ TigTree::ParseLookup(istream& pStream)
     {
       bool check = form->ParseInput(line);
       if (!check){
-	istringstream stream(line.c_str());	
+	std::istringstream stream(line.c_str());	
       stream >> token;
       if ( token.compare("end") == 0)
 	bail = true;
       else
-	cerr << "[TigTree::ParseLookup] Unknown token " << token << endl;
+	std::cerr << "[TigTree::ParseLookup] Unknown token " << token << std::endl;
       }
       if ( !bail)
 	getline(pStream,line);
@@ -883,13 +888,13 @@ TigTree::ParseLookup(istream& pStream)
    bool check = form->Initialize();
    if (check)  mObjects.push_back(form);
    else delete form;
-   //  cout << "[TigTree::ParseFormula] done "  << endl;
+   //  std::cout << "[TigTree::ParseFormula] done "  << std::endl;
 }
 
 
 //---- ParseHisto
 void 
-TigTree::ParseHisto(istream& pStream)
+TigTree::ParseHisto(std::istream& pStream)
 {
   TigHisto *histo = new TigHisto();
   string line, token;
@@ -899,12 +904,12 @@ TigTree::ParseHisto(istream& pStream)
     {
       bool check = histo->ParseInput(line);
       if (!check){
-	istringstream stream(line.c_str());	
+	std::istringstream stream(line.c_str());	
       stream >> token;
       if ( token.compare("end") == 0)
 	bail = true;
       else
-	cerr << "[TigTree::ParseHisto] Unknown token " << token << endl;
+	std::cerr << "[TigTree::ParseHisto] Unknown token " << token << std::endl;
       }
       if ( !bail)
 	getline(pStream,line);
@@ -917,7 +922,7 @@ TigTree::ParseHisto(istream& pStream)
 
 //---- ParseScaler
 void
-TigTree::ParseScaler(istream& pStream)
+TigTree::ParseScaler(std::istream& pStream)
 {
   TigScaler* scaler = new TigScaler();
   string line;
@@ -928,7 +933,7 @@ TigTree::ParseScaler(istream& pStream)
     {
       bool check = scaler->ParseInput(line);
       if (!check){
-	istringstream stream(line.c_str());	
+	std::istringstream stream(line.c_str());	
 	string token;
 	stream >> token;
 	if ( token.compare("end") == 0)
@@ -942,14 +947,14 @@ TigTree::ParseScaler(istream& pStream)
 		bool check = scaler->ParseSignal(line);
 	      if (!check) {
 		bailSignals = true;
-		//	cout << "[TigTree::ParseScaler] " << scaler->Name() << " end of signals" << endl;
+		//	std::cout << "[TigTree::ParseScaler] " << scaler->Name() << " end of signals" << std::endl;
 	      }	
 	      if ( !bailSignals)
 		getline(pStream,line);
 	      }
 	  }
 	else
-	  cerr << "[TigDetector::ParseScaler] Unknown token " << token << endl;
+	  std::cerr << "[TigDetector::ParseScaler] Unknown token " << token << std::endl;
       }
       if ( !bail)
 	getline(pStream,line);
@@ -963,7 +968,7 @@ TigTree::ParseScaler(istream& pStream)
 
 //---- ParseScalerHisto
 void 
-TigTree::ParseScalerHisto(istream& pStream)
+TigTree::ParseScalerHisto(std::istream& pStream)
 {
   TigScalerHisto *histo = new TigScalerHisto();
   string line, token;
@@ -973,12 +978,12 @@ TigTree::ParseScalerHisto(istream& pStream)
     {
       bool check = histo->ParseInput(line);
       if (!check){
-	istringstream stream(line.c_str());	
+	std::istringstream stream(line.c_str());	
       stream >> token;
       if ( token.compare("end") == 0)
 	bail = true;
       else
-	cerr << "[TigTree::ParseScalerHisto] Unknown token " << token << endl;
+	std::cerr << "[TigTree::ParseScalerHisto] Unknown token " << token << std::endl;
       }
       if ( !bail)
 	getline(pStream,line);
@@ -991,9 +996,9 @@ TigTree::ParseScalerHisto(istream& pStream)
 
 //---- ParseSorter
 void 
-TigTree::ParseSorter(istream& pStream)
+TigTree::ParseSorter(std::istream& pStream)
 {
-  //  cout << "[TigTree::ParseSorter]" << endl;
+  //  std::cout << "[TigTree::ParseSorter]" << std::endl;
   TigSortObject *sort = new TigSortObject();
   string line, token;
   bool	 bail = false;
@@ -1002,12 +1007,12 @@ TigTree::ParseSorter(istream& pStream)
     {
       bool check = sort->ParseInput(line);
       if (!check){
-	istringstream stream(line.c_str());	
+	std::istringstream stream(line.c_str());	
 	stream >> token;
 	if ( token.compare("end") == 0)
 	  bail = true;
 	else
-	cerr << "[TigTree::ParseSorter] Unknown token " << token << endl;
+	std::cerr << "[TigTree::ParseSorter] Unknown token " << token << std::endl;
       }
       if ( !bail)
 	getline(pStream,line);
@@ -1020,7 +1025,7 @@ TigTree::ParseSorter(istream& pStream)
 
 //---- ParseWaveform
 void 
-TigTree::ParseWaveform(istream& pStream)
+TigTree::ParseWaveform(std::istream& pStream)
 {
   TigWaveformHisto *histo = new TigWaveformHisto();
   string line, token;
@@ -1030,12 +1035,12 @@ TigTree::ParseWaveform(istream& pStream)
     {
       bool check = histo->ParseInput(line);
       if (!check){
-	istringstream stream(line.c_str());	
+	std::istringstream stream(line.c_str());	
       stream >> token;
       if ( token.compare("end") == 0)
 	bail = true;
       else
-	cerr << "[TigTree::ParseHisto] Unknown token " << token << endl;
+	std::cerr << "[TigTree::ParseHisto] Unknown token " << token << std::endl;
       }
       if ( !bail)
 	getline(pStream,line);
@@ -1067,8 +1072,8 @@ TigTree::ProcessScaler(string pBankName, vector<int> pValues)
 bool
 TigTree::ProcessSignal(TigEvent* pEvent)
 {
-  //  cout << "[TigTree::ProcessSignal] ";
-  // cout << "mAssembled.size() " << mAssembled.size() << endl;
+  //  std::cout << "[TigTree::ProcessSignal] ";
+  // std::cout << "mAssembled.size() " << mAssembled.size() << std::endl;
   bool result = false;
   int assembledNo = -1;
   for (int i = 0; i<mObjects.size(); i++) {
@@ -1108,7 +1113,7 @@ TigTree::ProcessSignal(TigEvent* pEvent)
 void 
 TigTree::ResetTree()
 {
-  //  cout << "[TigTree::ResetTree]" << endl;
+  //  std::cout << "[TigTree::ResetTree]" << std::endl;
   if (mTree){
   delete mTree;
   mTree = NULL;
@@ -1119,7 +1124,7 @@ TigTree::ResetTree()
 void 
 TigTree::ResetHistos()
 {
-  //  cout << "[TigTree::ResetHisto]" << endl;
+  //  std::cout << "[TigTree::ResetHisto]" << std::endl;
   for (int i = 0; i<mHistos.size(); i++) mHistos[i]->Reset();
   for (int i = 0; i<mWfHistos.size(); i++) mWfHistos[i]->Reset();
 }
@@ -1130,7 +1135,7 @@ TigTree::RunChain()
 {
   Int_t entries = mInputChain->GetEntries();
   for (int j =mCurrentEntry; j<entries; j++){
-    //    cout << "[TigTree::RunChain] entry " << j << endl;
+    //    std::cout << "[TigTree::RunChain] entry " << j << std::endl;
     mInputChain->GetEntry(j);
     for (int i = 0; i<mObjects.size(); i++) mObjects.at(i)->Evaluate();
     bool updatedHisto = false;
@@ -1159,8 +1164,8 @@ TigTree::RunChain()
 	}  
       if((j%5000)==0)
 	{
-	  cout << "." ;
-	  cout.flush();
+	  std::cout << "." ;
+	  std::cout.flush();
 	}    
       if (!mParent->KeepRunning()) {
 	mCurrentEntry =  j+1;
@@ -1181,17 +1186,17 @@ TigTree::Write()
 bool
 TigTree::ToggleWrite(int det)
 {
-  //  cout << "[TigTree::ToggleWrite] det " << det << endl;
+  //  std::cout << "[TigTree::ToggleWrite] det " << det << std::endl;
   if (det > mObjects.size() )  {
-    cerr << "[TigTree::ToggleWrite] out of range" << endl; 
+    std::cerr << "[TigTree::ToggleWrite] out of range" << std::endl; 
     return false;
   }
  mObjects.at(det)->mWriteToTree = !(mObjects.at(det)->mWriteToTree);
     /*
-  cout << "[TigTree::ToggleWrite] detName " <<  mDetectors.at(det)->Name() << endl;
-  cout << "[TigTree::ToggleWrite] mWriteToTree before " << mDetectors.at(det)->mWriteToTree << endl;
+  std::cout << "[TigTree::ToggleWrite] detName " <<  mDetectors.at(det)->Name() << std::endl;
+  std::cout << "[TigTree::ToggleWrite] mWriteToTree before " << mDetectors.at(det)->mWriteToTree << std::endl;
   mDetectors.at(det)->mWriteToTree = !(mDetectors.at(det)->mWriteToTree);
-  cout << "[TigTree::ToggleWrite] mWriteToTree after " << mDetectors.at(det)->mWriteToTree << endl;
+  std::cout << "[TigTree::ToggleWrite] mWriteToTree after " << mDetectors.at(det)->mWriteToTree << std::endl;
     */
  
   return true;

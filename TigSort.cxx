@@ -9,7 +9,6 @@
 #include <sstream>
 #include <fstream>
 #include <iomanip>
-#include <assert.h>
 #include <signal.h>
 
 #include <TMidasOnline.h>
@@ -41,7 +40,7 @@ bool gIsRunning = false;
 bool gIsPedestalsRun = false;
 int  gEventCutoff = 0;
 
-string configFile = "-";
+std::string configFile = "-";
 TDirectory* gOnlineHistDir = NULL;
 TFile* gOutputFile = NULL;
 

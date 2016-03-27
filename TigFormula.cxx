@@ -2,7 +2,12 @@
 // author: Ulrike Hager
 
 #include <iostream>
-#include <TigFormula.h>
+#include <sstream>
+
+#include "TigFormula.h"
+
+using std::string;
+
 
 TigFormula::TigFormula()
   :  TigDataObject(1)
@@ -15,67 +20,67 @@ TigFormula::TigFormula()
 
 TigFormula::~TigFormula()
 {
-  //  cout << "[TigFormula::~TigFormula] " << mName << endl;
-   delete mFormula;
-  // cout << "[TigFormula::~TigFormula] done" << endl;
+  //  std::cout << "[TigFormula::~TigFormula] " << mName << std::endl;
+  delete mFormula;
+  // std::cout << "[TigFormula::~TigFormula] done" << std::endl;
 }
 
 bool
 TigFormula::Evaluate()
 {
-  // cout << "[TigFormula::Evaluate]" << endl;
+  // std::cout << "[TigFormula::Evaluate]" << std::endl;
   bool check = this->TigDataObject::Evaluate();
   if (!check) return false;
   int needed = mFormula->GetNpar(); 
 
   if (  needed != InputData.size() ) {
-    cerr << "[TigFormula::Evaluate] parameter mismatch: needed " << needed << " received: " << InputData.size() << endl;
+    std::cerr << "[TigFormula::Evaluate] parameter mismatch: needed " << needed << " received: " << InputData.size() << std::endl;
     return false ;
   }
   
- for (int i = 0; i<needed; i++ ) {
-   if ( *(InputUpdated.at(i)) == false ) return false;
+  for (int i = 0; i<needed; i++ ) {
+    if ( *(InputUpdated.at(i)) == false ) return false;
   }
 
   int combinations = 1;
   for (int i = 0; i<InputData.size(); i++)  combinations *= (InputData.at(i))->first;
-  //  cout << "[TigFormula::Evaluate] # combinations " << combinations << endl;;
+  //  std::cout << "[TigFormula::Evaluate] # combinations " << combinations << std::endl;;
 
   if (combinations){
-  double *pars;
-  pars = new double[combinations];
-  //  cout << "[TigFormula::Evaluate] " << mName << " combinations " << combinations << endl;
+    double *pars;
+    pars = new double[combinations];
+    //  std::cout << "[TigFormula::Evaluate] " << mName << " combinations " << combinations << std::endl;
 
-   ::memset(pars, 0,  combinations * sizeof(double));
+    ::memset(pars, 0,  combinations * sizeof(double));
 
-  // cout << " before:  " << endl; ;
-  // for (int j = 0; j<needed; j++)  cout << " &InputData.at(j)->first " << &(InputData.at(j)->first)  << " - InputData.at(j)->second " << (InputData.at(j)->second) << endl;
-  // cout << endl;
+    // std::cout << " before:  " << std::endl; ;
+    // for (int j = 0; j<needed; j++)  std::cout << " &InputData.at(j)->first " << &(InputData.at(j)->first)  << " - InputData.at(j)->second " << (InputData.at(j)->second) << std::endl;
+    // std::cout << std::endl;
 
-  double sorted[combinations][needed];
+    double sorted[combinations][needed];
 
-  for (int i = 0; i<needed; i++ ) {
-     int remainComb = 1;
-     for (int j = i+1; j<needed; j++)  remainComb *=  (InputData.at(j))->first;
-     for (int j = 0; j < (InputData.at(i))->first; j++) {
-      int oncount = 0;
-      int iniOff = remainComb * j;
-      int offcount = remainComb * (  (InputData.at(i))->first  - 1 );
-      for (int k = iniOff; k<combinations; k++){
-	bool fill = false;
-	if (oncount < remainComb) fill = true;
-	if (fill){
-	  sorted[k][i] =  (InputData.at(i))->second[j];
-	oncount++;
-	if (oncount == remainComb) offcount = remainComb * ( (InputData.at(i))->first -1 ) ;
-	}
-	else {
-	  offcount--;
-	  if (offcount == 0) oncount = 0;
+    for (int i = 0; i<needed; i++ ) {
+      int remainComb = 1;
+      for (int j = i+1; j<needed; j++)  remainComb *=  (InputData.at(j))->first;
+      for (int j = 0; j < (InputData.at(i))->first; j++) {
+	int oncount = 0;
+	int iniOff = remainComb * j;
+	int offcount = remainComb * (  (InputData.at(i))->first  - 1 );
+	for (int k = iniOff; k<combinations; k++){
+	  bool fill = false;
+	  if (oncount < remainComb) fill = true;
+	  if (fill){
+	    sorted[k][i] =  (InputData.at(i))->second[j];
+	    oncount++;
+	    if (oncount == remainComb) offcount = remainComb * ( (InputData.at(i))->first -1 ) ;
+	  }
+	  else {
+	    offcount--;
+	    if (offcount == 0) oncount = 0;
+	  }
 	}
       }
     }
-  }
 
     //  return;
 
@@ -83,9 +88,9 @@ TigFormula::Evaluate()
     if (combinations>mDataLength) this->SetDataLength(combinations);
     this->Update(combinations, pars );
 
-       // cout << "after:  " << endl; ;
-  // for (int j = 0; j<needed; j++)  cout << " &InputData.at(j)->size() " << &(InputData.at(j)->size())  << " - InputData.at(j)->second " << (InputData.at(j)->second) << endl;
-  // cout << endl;
+    // std::cout << "after:  " << std::endl; ;
+    // for (int j = 0; j<needed; j++)  std::cout << " &InputData.at(j)->size() " << &(InputData.at(j)->size())  << " - InputData.at(j)->second " << (InputData.at(j)->second) << std::endl;
+    // std::cout << std::endl;
 
   }
  
@@ -95,7 +100,7 @@ TigFormula::Evaluate()
 void 
 TigFormula::IncreaseDataLength(int d)
 {
-  // cout << "[TigFormula::IncreaseDataLength] " << mName << " - " << d  << endl;
+  // std::cout << "[TigFormula::IncreaseDataLength] " << mName << " - " << d  << std::endl;
   mDataLength *= d;
   this->SetDataLength(mDataLength);
 }
@@ -103,12 +108,12 @@ TigFormula::IncreaseDataLength(int d)
 bool
 TigFormula::Initialize()
 {
-  // cout << "[TigFormula::Initialize] " << mName << endl;
+  // std::cout << "[TigFormula::Initialize] " << mName << std::endl;
   if (!mFormula) return false;
   bool check =  this->TigDataObject::Initialize();
   if (!check) return false;
   if (mFormula->GetNpar() != mNeeded.size()) {
-    cout << "[TigFormula::Initialize] parameter mismatch: needed " << mFormula->GetNpar() << " found: " <<mNeeded.size() << endl;
+    std::cout << "[TigFormula::Initialize] parameter mismatch: needed " << mFormula->GetNpar() << " found: " <<mNeeded.size() << std::endl;
     return false;
   }
   this->SetDataLength(1);
@@ -120,14 +125,14 @@ TigFormula::ParseInput(string line)
 {
   bool result = false;
   string token;
-  istringstream stream(line.c_str());	
+  std::istringstream stream(line.c_str());	
   stream >> token;
   if ( token.compare("equation") == 0)
     {
       size_t startP = line.find_first_of("\"");
       size_t endP = line.find_last_of("\"");
       string eq = line.substr(startP+1,endP-startP-1);
-      //   cout << "[TigTree::ParseFormula] equation " << eq << endl;
+      //   std::cout << "[TigTree::ParseFormula] equation " << eq << std::endl;
       this->SetFormula(eq);
       result = true;
     }
@@ -141,10 +146,10 @@ TigFormula::SetFormula(string form)
   //  mFormula = new TFormula(mName.c_str(), form.c_str());
 
   mFormula = new TFormula();
-    mFormula->SetName(mName.c_str());
+  mFormula->SetName(mName.c_str());
   int check = mFormula->Compile(form.c_str());
   if (check == 1) {
-    cerr << "[TigFormula::SetFormula] " << mName << " error compiling TFormula" << endl;
+    std::cerr << "[TigFormula::SetFormula] " << mName << " error compiling TFormula" << std::endl;
     delete mFormula;
     mFormula = NULL;
   }

@@ -6,10 +6,9 @@
 
 #include <TH1.h>
 #include <TH2.h>
-//#include <TigObject.h>
-#include <TigDataObject.h>
 
-using namespace std;
+#include "TigDataObject.h"
+
 
 class TigHistoObject : public TigDataObject
 {

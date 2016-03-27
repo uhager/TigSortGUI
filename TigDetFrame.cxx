@@ -3,11 +3,9 @@
 
 
 #include <iostream>
-#include <TigFrame.h>
-#include <TigDetFrame.h>
 
-
-using namespace std;
+#include "TigFrame.h"
+#include "TigDetFrame.h"
 
 
 
@@ -48,7 +46,7 @@ TigDetFrame::~TigDetFrame()
 void
 TigDetFrame::AddEntry(TigDataObject* obj, int id)
 {
-  //  cout << "[TigDetFrame::AddEntry] name " << obj->Name() << " id " << id << endl; 
+  //  std::cout << "[TigDetFrame::AddEntry] name " << obj->Name() << " id " << id << std::endl; 
   TGLabel *lab = new TGLabel(mCompFrame,obj->Name().c_str());
    mCompFrame->AddFrame(lab);
    //   int height = lab->GetDefaultHeight();
@@ -72,7 +70,7 @@ TigDetFrame::HandleButtons()
   TGButton *btn = (TGButton *) gTQSender;
   int buttonID = btn->WidgetId();
 
-  //  cout << "[TigDetFrame::HandleButtons] buttonID " << buttonID << endl;
+  //  std::cout << "[TigDetFrame::HandleButtons] buttonID " << buttonID << std::endl;
   int button = buttonID % 100;
   int det = buttonID /100;
 

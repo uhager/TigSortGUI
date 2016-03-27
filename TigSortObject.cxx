@@ -3,7 +3,11 @@
 
 #include <iostream>
 #include <sstream>
-#include <TigSortObject.h>
+
+#include "TigSortObject.h"
+
+using std::string;
+using std::vector;
 
 TigSortObject::TigSortObject() 
   : TigDataObject()
@@ -17,7 +21,7 @@ TigSortObject::TigSortObject()
 void
 TigSortObject::Clear()
 {
-  cout << "[TigSortObject::Clear] " << mName << endl;
+  std::cout << "[TigSortObject::Clear] " << mName << std::endl;
   this->TigDataObject::Clear();
 }
 */
@@ -25,7 +29,7 @@ TigSortObject::Clear()
 bool
 TigSortObject::Evaluate()
 {
-  //  cout << "[TigSortObject::Evaluate] " << mName << endl;
+  //  std::cout << "[TigSortObject::Evaluate] " << mName << std::endl;
   bool check = this->TigDataObject::Evaluate();
   if (!check) return false;
 
@@ -37,10 +41,10 @@ TigSortObject::Evaluate()
     if ( *(InputUpdated.at(i)) == false ) return false;
   }
     if (this->InputData.size() != 2 ){
-      cout << "[TigSortObject::Evaluate] max value wrong input data size" << endl;
+      std::cout << "[TigSortObject::Evaluate] max value wrong input data size" << std::endl;
       return false;
     }
-    //  cout << "[TigSortObject::Evaluate] 'maxValue' " << mName <<  endl;
+    //  std::cout << "[TigSortObject::Evaluate] 'maxValue' " << mName <<  std::endl;
     double maxCh, maxV;
     maxV = 0;
     for (int j = 0; j < (InputData.at(1))->first; j++) {
@@ -58,15 +62,15 @@ TigSortObject::Evaluate()
       if ( *(InputUpdated.at(i)) == false ) return false;
     }
     if (this->InputData.size() != 2 ){
-      cerr << "[TigSortObject::Evaluate] 'select' wrong input data size" << endl;
+      std::cerr << "[TigSortObject::Evaluate] 'select' wrong input data size" << std::endl;
       return false;
     }
-    //    cout << "[TigSortObject::Evaluate] " << mName << " 'select' " << endl;
+    //    std::cout << "[TigSortObject::Evaluate] " << mName << " 'select' " << std::endl;
     double channel[mParameters.size()], value[mParameters.size()];
     int counter = 0;
     for (int i=0; i<(InputData.at(0))->first; i++){
-      //      cout << "[TigSortObject::Evaluate] " << mName << " 'select' loop " << i << " " << mInputNames.at(i) << " size " << (InputData.at(0))->first << endl;
-      set<int>::iterator iter;
+      //      std::cout << "[TigSortObject::Evaluate] " << mName << " 'select' loop " << i << " " << mInputNames.at(i) << " size " << (InputData.at(0))->first << std::endl;
+      std::set<int>::iterator iter;
       iter = mChannels.find( (InputData.at(0))->second[i] );
       if (iter != mChannels.end()) {
 	channel[ counter ] =(InputData.at(0))->second[i];
@@ -83,7 +87,7 @@ TigSortObject::Evaluate()
     }
     if (!updated) return false;
     int inPerInput = InputData.size()/mInputNames.size();
-    //    cout << "[TigSortObject::Evaluate] 'combine' " << mName  << " " <<  inPerInput << " inputs" << endl;
+    //    std::cout << "[TigSortObject::Evaluate] 'combine' " << mName  << " " <<  inPerInput << " inputs" << std::endl;
     vector< vector<double> > combined;
     for (int j=0; j<inPerInput; j++) {
       vector<double> tmp;
@@ -96,7 +100,7 @@ TigSortObject::Evaluate()
     int size = combined.at(0).size();
     for (int i=1; i<combined.size(); i++)
       if (size != combined.at(i).size()){
-      cerr << "[TigSortObject::Evaluate] this did not go well... data size mismatch " << endl;
+      std::cerr << "[TigSortObject::Evaluate] this did not go well... data size mismatch " << std::endl;
       return false;
     }
     double value0[size];
@@ -116,7 +120,7 @@ void
 TigSortObject::IncreaseDataLength(int d)
 {
   if (mWhatToDo==COMBINE){
-    //  cout << "[TigSortObject::IncreaseDataLength] " << mName << " - " << d  << endl;
+    //  std::cout << "[TigSortObject::IncreaseDataLength] " << mName << " - " << d  << std::endl;
     mDataLength += d;
     this->SetDataLength(mDataLength);
   }
@@ -125,7 +129,7 @@ TigSortObject::IncreaseDataLength(int d)
 bool
 TigSortObject::Initialize()
 {
-  //  cout << "[TigSortObject::Initialize] " << mName << endl;
+  //  std::cout << "[TigSortObject::Initialize] " << mName << std::endl;
   bool check =  this->TigDataObject::Initialize();
   if (!check) return false;
    
@@ -134,7 +138,7 @@ TigSortObject::Initialize()
     return true;
   case MAXVALUE: {
     if (mInputNames.size() != 1) {
-      cerr << "[TigSortObject::Initialize] maxValue needs exactly one input" << endl;
+      std::cerr << "[TigSortObject::Initialize] maxValue needs exactly one input" << std::endl;
       return false;
     }
     //      this->AddInput( mNeeded.at(0).first , 1);
@@ -145,16 +149,16 @@ TigSortObject::Initialize()
   }
   case SELECTCHANNEL: { 
     if (mInputNames.size() != 1) {
-      cerr << "[TigSortObject::Initialize] selectChannel needs exactly one input" << endl;
+      std::cerr << "[TigSortObject::Initialize] selectChannel needs exactly one input" << std::endl;
       return false;
     }
     if (mParameters.size()==0) {
-      cerr << "[TigSortObject::IniParams] no channels specified to select" << endl;
+      std::cerr << "[TigSortObject::IniParams] no channels specified to select" << std::endl;
       return false;
     }
     int channel; 
     for (int k=0; k<mParameters.size(); k++) {
-      istringstream ( mParameters.at(k) ) >> channel;
+      std::istringstream ( mParameters.at(k) ) >> channel;
       mChannels.insert( channel) ;
     }
     //  this->AddInput( mNeeded.at(0).first , 1);
@@ -165,18 +169,18 @@ TigSortObject::Initialize()
   }
   case COMBINE: {
     if (mInputNames.size() < 2) {
-      cerr << "[TigSortObject::Initialize] combine requires at least 2 inputs to make sense" << endl;
+      std::cerr << "[TigSortObject::Initialize] combine requires at least 2 inputs to make sense" << std::endl;
       return false;
     }
     //      this->AddInput( mNeeded.at(0).first , 1);
 
     int inPerInput = InputData.size()/mInputNames.size();
     if (inPerInput*mInputNames.size() != InputData.size() ){
-      cerr << "[TigSortObject::Initialize] trying to combine objects with different data sizes. Try choosing _channel/value" << endl;
+      std::cerr << "[TigSortObject::Initialize] trying to combine objects with different data sizes. Try choosing _channel/value" << std::endl;
       return false;
     }
     if (inPerInput > 2 ){
-      cerr << "[TigSortObject::Initialize] Ooops! More that 2 values per object not currently implemented!" << endl;
+      std::cerr << "[TigSortObject::Initialize] Ooops! More that 2 values per object not currently implemented!" << std::endl;
       return false;
     }
     this->SetNumData(inPerInput);
@@ -185,7 +189,7 @@ TigSortObject::Initialize()
     break;
   }
   default: {
-    cerr << "[TigSortObject::Initialize] failed" << endl;
+    std::cerr << "[TigSortObject::Initialize] failed" << std::endl;
     return false;
   }
   }
@@ -195,10 +199,10 @@ TigSortObject::Initialize()
 bool 
 TigSortObject::ParseInput(string line)
 {
-  //  cout << "[TigSortObject::ParseInput] " << mName << endl;
+  //  std::cout << "[TigSortObject::ParseInput] " << mName << std::endl;
   bool result = false;
   string token;
-  istringstream stream(line.c_str());	
+  std::istringstream stream(line.c_str());	
   stream >> token;
   if ( token.compare("parameters") == 0)
     {
@@ -217,7 +221,7 @@ TigSortObject::ParseInput(string line)
       else if ( token.compare("selectChannel") == 0 ) mWhatToDo = SELECTCHANNEL; 
       else if ( token.compare("combine") == 0 ) mWhatToDo = COMBINE;
       else {
-	cerr << "[TigSortObject::ParseInput] '" << token << "' unknown" << endl;
+	std::cerr << "[TigSortObject::ParseInput] '" << token << "' unknown" << std::endl;
 	return false;
       }
       result = true;

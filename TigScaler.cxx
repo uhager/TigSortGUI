@@ -2,9 +2,12 @@
 // author: Ulrike Hager
 
 #include <iostream>
-#include <TigScaler.h>
+#include <sstream>
 
-using namespace std;
+#include "TigScaler.h"
+
+
+using std::string;
 
 //---- TigScaler
 TigScaler::TigScaler(void)
@@ -61,13 +64,13 @@ TigScaler::ParseInput(string line)
 
   bool result = true;
   string token;
-  istringstream stream(line.c_str());	
+  std::istringstream stream(line.c_str());	
   stream >> token;
 
   if ( token.compare("bank") == 0)
 	{	
 	  stream >> token;
-	  cout << ".(" << token << ").";
+	  std::cout << ".(" << token << ").";
 	  SetBank(token);
 	}
   else result = this->TigObject::ParseInput(line);
@@ -80,11 +83,11 @@ TigScaler::ParseSignal(string line)
 {
   bool result = true;
   string token;
- istringstream stream(line.c_str());	
+  std::istringstream stream(line.c_str());	
    stream >> token;
    if ( token == "" || token[0] == '#') {}  //comment or blank
    else if ( token.compare("end") == 0) {
-    //    cout << "[TigScaler::ParseSignal] " << mName << " end of signals" << endl;
+    //    std::cout << "[TigScaler::ParseSignal] " << mName << " end of signals" << std::endl;
      result = false;
    }
    else
@@ -92,7 +95,7 @@ TigScaler::ParseSignal(string line)
        int channel;
        stream >> channel;
        AddRequest(token, channel);
-       //  cout << "added signal: " << channel << " - " << token << endl;
+       //  std::cout << "added signal: " << channel << " - " << token << std::endl;
      }   
   return result; 
 }
@@ -100,12 +103,12 @@ TigScaler::ParseSignal(string line)
 
 //---- ProcessEvent
 bool 
-TigScaler::ProcessEvent(vector<int> pData)
+TigScaler::ProcessEvent(std::vector<int> pData)
 {
   for (int i = 0; i<mRequested.size(); i++)
     {
       if (mRequested[i] > pData.size()){
-	cout << "[TigScaler::ProcessEvent] requested scaler channel not in data"<< endl;
+	std::cout << "[TigScaler::ProcessEvent] requested scaler channel not in data"<< std::endl;
 	return false;
       }
       mEventData[i] = pData[ mRequested[i] ];
@@ -127,7 +130,7 @@ string
 TigScaler::ScalerName(int pIndex)
 {
   if (pIndex > mNames.size() ){
-    cout << "[TigScaler::Name] requested name " << pIndex << " out of  " << mNames.size()  << endl;
+    std::cout << "[TigScaler::Name] requested name " << pIndex << " out of  " << mNames.size()  << std::endl;
     return "";
   }
   return mNames.at(pIndex);

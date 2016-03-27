@@ -6,11 +6,10 @@
 
 //class TigFrame;
 
-#include <iostream>
 #include <set>
+
 #include <TROOT.h>
 #include <TSystem.h>
-//#include <TTimer.h>
 #include <TGMenu.h>
 #include <TGButton.h>
 #include <TGButtonGroup.h>
@@ -26,10 +25,11 @@
 #include <TGComboBox.h>
 #include <TCanvas.h>
 #include <TH1.h>
-#include <TigDetFrame.h>
-#include <TigManager.h>
 
-using namespace std;
+#include "TigDetFrame.h"
+#include "TigManager.h"
+
+
 
 class TigDetFrame;
 
@@ -80,7 +80,7 @@ TigManager*	mManager;
  TGComboBox *mComboTrees;
  TGTextEntry *mOutEntry, *mOutPostfixEntry, *mOutPrefixEntry;
  TGTextButton *mRunButton, *mTBSaveHistos, *mTBStep;
-  set<int> mRunNumbers;
+ std::set<int> mRunNumbers;
   TGFileInfo mFileInfo;
   TGButtonGroup *mBGOutfile, *mBGHisto;
   TGGroupFrame *mGFOutEntry;
@@ -88,10 +88,10 @@ TigManager*	mManager;
   TGVerticalFrame *mFrameOutEntry, *mFrameTreeMain ;
   TGLayoutHints *mLHOutEntry, *mLHDetList, *mLHButtons;
   TGHorizontalFrame *mFrameMain, *mFrameButtons, *mFrameTree, *mFrameLists, *mFrameMods;
-  string mOutFileNumbers;
+  std::string mOutFileNumbers;
   TGTab *mTab;
   //  vector<TigDetFrame*> mDetFrames; 
-  vector<TGCompositeFrame*> mTreeTabs;
+  std::vector<TGCompositeFrame*> mTreeTabs;
 
  private:
   TigFrame(const TigFrame&);

@@ -2,9 +2,12 @@
 // author: Ulrike Hager
 
 #include <iostream>
-#include <TigHisto.h>
+#include <sstream>
+
+#include "TigHisto.h"
 
 
+using std::string;
 
 TigHisto::TigHisto()
   :xBins(0)
@@ -18,49 +21,49 @@ TigHisto::TigHisto()
 bool
 TigHisto::Initialize()
 {
-  // cout << "TigHisto " << mName << " initialising" << endl;
+  // std::cout << "TigHisto " << mName << " initialising" << std::endl;
   bool check =  this->TigDataObject::Initialize();
    if (!check) return check;
    if (!xBins){
-     cout << "[TigHisto::Initialize] no xbins set for " << mName << endl;
+     std::cout << "[TigHisto::Initialize] no xbins set for " << mName << std::endl;
      return false;
    }
     if (mNeeded.size() == 1){
-      //  cout << mName << " is 1D" << endl;
+      //  std::cout << mName << " is 1D" << std::endl;
       mWhatToDo = ONE_D;
       mHisto = new TH1F(mName.c_str(),mInputNames.at(0).c_str(),xBins, xMin, xMax);
     } 
     else if (mNeeded.size() == 2){
-      //      cout << mName << " is 2D" << endl;
+      //      std::cout << mName << " is 2D" << std::endl;
       if (!yBins){
-	cout << "[TigHisto::Initialize] no ybins set" << endl;
+	std::cout << "[TigHisto::Initialize] no ybins set" << std::endl;
 	return false;
       }
       mWhatToDo = TWO_D;
-      //      cout << "TigHisto " << mName << " test 1" << endl;     
+      //      std::cout << "TigHisto " << mName << " test 1" << std::endl;     
       string title = mInputNames.at(1) + " vs " + mInputNames.at(0);
-      //cout << "TigHisto " << mName << " test 2" << endl;     
+      //std::cout << "TigHisto " << mName << " test 2" << std::endl;     
       mHisto = new TH2F(mName.c_str(),title.c_str(),xBins, xMin, xMax, yBins, yMin, yMax);
       mHisto->SetOption("COLZ");
     }
     else {
-      cout << "[TigHisto::Initialize] wrong number of parameters: " << mInputNames.size() << endl;
+      std::cout << "[TigHisto::Initialize] wrong number of parameters: " << mInputNames.size() << std::endl;
       return false;
     }
-    //    cout << "TigHisto " << mName << " initialised" << endl;
+    //    std::cout << "TigHisto " << mName << " initialised" << std::endl;
      return true;
   }
 
 bool
 TigHisto::Evaluate()
 {
-  //  cout << "[TigHisto::Evaluate] " << mName << endl;
+  //  std::cout << "[TigHisto::Evaluate] " << mName << std::endl;
   bool check = this->TigDataObject::Evaluate();
   if (!check) return false;
 
    int needed = mNeeded.size(); 
   if (  needed != InputData.size() ) {
-    cout << "[TigHisto::Fill] parameter mismatch: needed " << needed << " received: " << InputData.size() << endl;
+    std::cout << "[TigHisto::Fill] parameter mismatch: needed " << needed << " received: " << InputData.size() << std::endl;
     return  true;
   }
   
@@ -69,15 +72,15 @@ TigHisto::Evaluate()
   }
   int combinations = 1;
   for (int i = 0; i<InputData.size(); i++)  combinations *= (InputData.at(i))->first;
-  //  cout << "[TigHisto::Evaluate] # combinations " << combinations << endl;;
+  //  std::cout << "[TigHisto::Evaluate] # combinations " << combinations << std::endl;;
   if (combinations){
   double *pars;
   pars = new double[combinations];
    ::memset(pars, 0,  combinations * sizeof(double));
 
-  // cout << " before:  " << endl; ;
-  // for (int j = 0; j<needed; j++)  cout << " &InputData.at(j)->size() " << &(InputData.at(j)->size())  << " - InputData.at(j)->second " << (InputData.at(j)->second) << endl;
-  // cout << endl;
+  // std::cout << " before:  " << std::endl; ;
+  // for (int j = 0; j<needed; j++)  std::cout << " &InputData.at(j)->size() " << &(InputData.at(j)->size())  << " - InputData.at(j)->second " << (InputData.at(j)->second) << std::endl;
+  // std::cout << std::endl;
 
   double sorted[combinations][needed];
   for (int i = 0; i<needed; i++ ) {
@@ -106,11 +109,11 @@ TigHisto::Evaluate()
     if (mWhatToDo == TWO_D )  mHisto->Fill(sorted[i][0],sorted[i][1]);
     else if (mWhatToDo == ONE_D )  mHisto->Fill(sorted[i][0]);
   }    
-          // cout << "after:  " << endl; ;
-  // for (int j = 0; j<needed; j++)  cout << " &InputData.at(j)->size() " << &(InputData.at(j)->size())  << " - InputData.at(j)->second " << (InputData.at(j)->second) << endl;
-  // cout << endl;
+          // std::cout << "after:  " << std::endl; ;
+  // for (int j = 0; j<needed; j++)  std::cout << " &InputData.at(j)->size() " << &(InputData.at(j)->size())  << " - InputData.at(j)->second " << (InputData.at(j)->second) << std::endl;
+  // std::cout << std::endl;
   }
-  // cout << "[TigHisto::Evaluate] done" << endl;
+  // std::cout << "[TigHisto::Evaluate] done" << std::endl;
   return true;
 }
 
@@ -119,7 +122,7 @@ TigHisto::ParseInput(string line)
 {
   bool result = false;
   string token;
-  istringstream stream(line.c_str());	
+  std::istringstream stream(line.c_str());	
   stream >> token;
 
   if ( token.compare("xbins") == 0)
@@ -149,7 +152,7 @@ TigHisto::ParseInput(string line)
 void 
 TigHisto::SetXBinning(int bins,double min,double max)
 {
-  //  cout << "TigHisto " << mName << " x binning " << bins << ", " << min << ", " << max << endl;
+  //  std::cout << "TigHisto " << mName << " x binning " << bins << ", " << min << ", " << max << std::endl;
   xBins = bins;
   xMin = min;
   xMax = max;
@@ -159,7 +162,7 @@ TigHisto::SetXBinning(int bins,double min,double max)
 void 
 TigHisto::SetYBinning(int bins,double min,double max)
 {
-  //  cout << "TigHisto " << mName << " y binning " << bins << ", " << min << ", " << max << endl;
+  //  std::cout << "TigHisto " << mName << " y binning " << bins << ", " << min << ", " << max << std::endl;
   yBins = bins;
   yMin = min;
   yMax = max;

@@ -2,7 +2,9 @@
 // author: Ulrike Hager
 
 #include <iostream>
-#include <TigCalibration.h>
+#include <sstream>
+
+#include "TigCalibration.h"
 
 TigCalibration::TigCalibration()
   :  TigDataObject(2)
@@ -19,29 +21,29 @@ TigCalibration::TigCalibration()
 bool
 TigCalibration::Evaluate()
 {
-  //  cout << "[TigCalibration::Evaluate] " << mName << " - max " << mCalibration.size() <<  " channels " << endl;
+  //  std::cout << "[TigCalibration::Evaluate] " << mName << " - max " << mCalibration.size() <<  " channels " << std::endl;
   bool check = this->TigDataObject::Evaluate();
   if (!check) return false;
   for (int i = 0; i<InputData.size(); i++ ) {
     if ( *(InputUpdated.at(i)) == false ) return false;
   }
   if (this->InputData.size() != 2 ){
-    cout << "[TigCalibration::Evaluate] wrong input data size" << endl;
+    std::cout << "[TigCalibration::Evaluate] wrong input data size" << std::endl;
     return false;
   }
     double channels[mCalibration.size()], values[mCalibration.size()];
     int counter = 0;
     for (int i=0; i<(InputData.at(0))->first; i++){
-      //      cout << "[TigCalibration::Evaluate] " << mName << " " << i << " of " << (InputData.at(0))->size() << " input values " << endl;
+      //      std::cout << "[TigCalibration::Evaluate] " << mName << " " << i << " of " << (InputData.at(0))->size() << " input values " << std::endl;
 	    int channel = (InputData.at(0))->second[i];
 	    if (mCalibration.find(channel) != mCalibration.end()) {
-	      //	     cout << "[TigCalibration::Evaluate] " << mName << "-" << channel << ": " << counter <<  " of " << mCalibration.size() ; 
+	      //	     std::cout << "[TigCalibration::Evaluate] " << mName << "-" << channel << ": " << counter <<  " of " << mCalibration.size() ; 
 	      double value = (InputData.at(1))->second[i];
-	      //	      cout << " ADC value " << value ;
+	      //	      std::cout << " ADC value " << value ;
 	      values[counter] =  ( value * mCalibration[ channel ].first ) + mCalibration[ channel ].second;
-	      //	      cout << " -> " << values[counter] << endl; 
+	      //	      std::cout << " -> " << values[counter] << std::endl; 
 	      channels[counter] = (InputData.at(0))->second[i];
-	      //	      cout << " next up: " << counter <<endl;
+	      //	      std::cout << " next up: " << counter <<std::endl;
 	      counter++;
 	    }
     }
@@ -58,7 +60,7 @@ TigCalibration::IncreaseDataLength(int d)
 bool
 TigCalibration::Initialize()
 {
-  // cout << "[TigFormula::Initialize] " << mName << endl;
+  // std::cout << "[TigFormula::Initialize] " << mName << std::endl;
   if (mName.compare("calibration") == 0 ) mName = mInputNames.at(0) + "_calib";
   bool check =  this->TigDataObject::Initialize();
   //  SetNumData(2);
@@ -67,18 +69,18 @@ TigCalibration::Initialize()
 
 //--- ParseInput
 bool
-TigCalibration::ParseInput(string line)
+TigCalibration::ParseInput(std::string line)
 {
   bool result = false;
-  string token;
+  std::string token;
   int channel;
-  istringstream stream(line.c_str());	
+  std::istringstream stream(line.c_str());	
   if (stream >> channel )
     {
       double gain, offset;
       stream >> gain >> offset;
-      mCalibration[ channel ] = make_pair(gain,offset);   
-      //      cout << "[TigCalibration::ParseInput] " << mInputNames.at(0) << ": " << channel << " - " << mCalibration[channel].first << " xCh + " << offset << endl; 
+      mCalibration[ channel ] = std::make_pair(gain,offset);   
+      //      std::cout << "[TigCalibration::ParseInput] " << mInputNames.at(0) << ": " << channel << " - " << mCalibration[channel].first << " xCh + " << offset << std::endl; 
       result = true;
     }
   else result = this->TigDataObject::ParseInput(line);

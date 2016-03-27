@@ -5,16 +5,17 @@
 #define TIGWAVEFORMHISTO_H
 
 #include <TigEvent.h>
-#include <TigHistoObject.h>
+
+#include "TigHistoObject.h"
 
 class TigWaveformHisto : public TigHistoObject
 {
  public:
   TigWaveformHisto();
   ~TigWaveformHisto(){};
-  bool Evaluate(vector<short> pWf);
+  bool Evaluate(std::vector<short> pWf);
   bool Initialize();
-  virtual  bool ParseInput(string line);
+  virtual  bool ParseInput(std::string line);
   bool ProcessSignal(TigEvent* pEvent);
 
  protected:

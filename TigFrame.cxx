@@ -2,13 +2,16 @@
 // author: Ulrike Hager
 
 #include <iostream>
+#include <sstream>
+
 #include <TSystemFile.h>
 #include <TMath.h>
 #include <TGInputDialog.h>
-#include <TigFrame.h>
 
-using namespace std;
+#include "TigFrame.h"
 
+using std::string;
+using std::vector;
 
 enum CommandIDs {
   LOAD_CONFIG_FILE 
@@ -51,7 +54,7 @@ TigFrame::TigFrame(const TGWindow *pWindow, UInt_t pWidth, UInt_t pHeight, UInt_
 , mCanvas(NULL)
   //,mTimerTime(300)
 {
-  //    cout << "[TigFrame::TigFrame]" << endl;
+  //    std::cout << "[TigFrame::TigFrame]" << std::endl;
 
     mManager = new  TigManager;
     mManager->Connect("HistoUpdate()","TigFrame", this, "UpdateHisto()");
@@ -219,25 +222,25 @@ TigFrame::AssembleOutFileNumbers(TList * files)
 	  size_t dash = numbers.find('-');
 	  if (dash != string::npos ) {
 	    string number = numbers.substr(0, dash);
-	    istringstream(number) >> firstNum;
+	    std::istringstream(number) >> firstNum;
 	    mRunNumbers.insert(firstNum);
 	    number = numbers.substr(dash+1);
-	    istringstream(number) >> firstNum;
+	    std::istringstream(number) >> firstNum;
 	    mRunNumbers.insert(firstNum);
 	  }
 	  else {
-	    istringstream(numbers) >> firstNum;
-	  //	  cout << base << " - " << firstNum << endl;
+	    std::istringstream(numbers) >> firstNum;
+	  //	  std::cout << base << " - " << firstNum << std::endl;
 	    mRunNumbers.insert(firstNum);
 	  }
 	}
 	if (base.find("sort") == 0 ) 	mOutPostfixEntry->SetText("_step2");
 
-	stringstream ss;
+	std::stringstream ss;
 	if (mRunNumbers.size()>1) ss <<  *mRunNumbers.begin() <<"-" << *mRunNumbers.rbegin();
 	else if (mRunNumbers.size()==1) ss << *mRunNumbers.begin();
 	mOutFileNumbers = ss.str();
-	string text = mOutPrefixEntry->GetText() + mOutFileNumbers +  mOutPostfixEntry->GetText() + ".root" ; 
+	std::string text = mOutPrefixEntry->GetText() + mOutFileNumbers +  mOutPostfixEntry->GetText() + ".root" ; 
 	mOutEntry->SetText(text.c_str());
 
 }
@@ -283,7 +286,7 @@ TigFrame::GetDetectorList(int index)
 void
 TigFrame::GetHisto(char * na)
 {
-  //  cout << "[TigFrame::GetHisto]" << endl;
+  //  std::cout << "[TigFrame::GetHisto]" << std::endl;
   mHisto = mManager->Histogram( mComboTrees->GetSelected(), mLBHistos->GetSelected() );
   if ((mHisto) && (mCanvas)) {
     mHisto->Draw();
@@ -328,13 +331,13 @@ TigFrame::GetUsableHeight()
 void 
 TigFrame::HandleDetFrame(int det, int button)
 {
-  //  cout << "[TigFrame::HandleDetFrame] options: USE_CALIB " << USE_CALIB << ", WRITE_TO_TREE " << WRITE_TO_TREE << endl;
+  //  std::cout << "[TigFrame::HandleDetFrame] options: USE_CALIB " << USE_CALIB << ", WRITE_TO_TREE " << WRITE_TO_TREE << std::endl;
   int treeN = mTab->GetCurrent()-1;
-  //  cout << "[TigFrame::HandleDetFrame] button " << button << endl;
+  //  std::cout << "[TigFrame::HandleDetFrame] button " << button << std::endl;
   switch (button)
     {
     case WRITE_TO_TREE: {
-      //      cout << "[TigFrame::HandleDetFrame] write to tree" << endl; 
+      //      std::cout << "[TigFrame::HandleDetFrame] write to tree" << std::endl; 
       mManager->SetWriteDet(treeN,det);
     }
 
@@ -355,7 +358,7 @@ TigFrame::HandleMenu(Int_t ID)
       mFileInfo.fMultipleSelection = false;
       new TGFileDialog(gClient->GetRoot(),this,kFDOpen,&mFileInfo );
       if (mFileInfo.fFilename ){
-	cout << mFileInfo.fFilename << " - " << mFileInfo.fIniDir<<  endl;
+	std::cout << mFileInfo.fFilename << " - " << mFileInfo.fIniDir<<  std::endl;
 	mManager->ParseInputFile(mFileInfo.fFilename);
 	mComboTrees->RemoveAll();
 	mLBDetectors->RemoveAll();
@@ -373,7 +376,7 @@ TigFrame::HandleMenu(Int_t ID)
       mFileInfo.fMultipleSelection = false;
       new TGFileDialog(gClient->GetRoot(),this,kFDOpen,&mFileInfo );
       if (mFileInfo.fFilename ){
-	cout << mFileInfo.fFilename << " - " << mFileInfo.fIniDir<<  endl;
+	std::cout << mFileInfo.fFilename << " - " << mFileInfo.fIniDir<<  std::endl;
 	mManager->ConfigFromRootFile(mFileInfo.fFilename);
 	mComboTrees->RemoveAll();
 	mLBDetectors->RemoveAll();
@@ -424,7 +427,7 @@ TigFrame::HandleMenu(Int_t ID)
       mFileInfo.fMultipleSelection = false;
       new TGFileDialog(gClient->GetRoot(),this,kFDOpen,&mFileInfo );
       if (mFileInfo.fFilename ){
-	cout << mFileInfo.fFilename << " - " << mFileInfo.fIniDir<<  endl;
+	std::cout << mFileInfo.fFilename << " - " << mFileInfo.fIniDir<<  std::endl;
 	mManager->ParseCalibrationFile(mFileInfo.fFilename); 
 	LayoutTreeTabs();
       }
@@ -434,7 +437,7 @@ TigFrame::HandleMenu(Int_t ID)
       mFileInfo.fMultipleSelection = true;
       new TGFileDialog(gClient->GetRoot(),this,kFDOpen,&mFileInfo );
       if (mFileInfo.fFileNamesList ){
-	//	cout << mFileInfo.fFilename << " - " << mFileInfo.fIniDir<<  endl;
+	//	std::cout << mFileInfo.fFilename << " - " << mFileInfo.fIniDir<<  std::endl;
 	TSystemFile *file;
 	TIter next(mFileInfo.fFileNamesList);
 	while ( file=(TSystemFile*)next() )  mManager->ParseFormHistFile(file->GetName()); 
@@ -458,7 +461,7 @@ TigFrame::HandleMenu(Int_t ID)
       this->GetHistoList(0);
     }break;
     case DELETE_ALL_FORMULAS: {
-      cout << "[TigFrame::HandleMenu] delete formulas" << endl;
+      std::cout << "[TigFrame::HandleMenu] delete formulas" << std::endl;
       if (mHisto){
 	mHisto = NULL;
       }
@@ -468,7 +471,7 @@ TigFrame::HandleMenu(Int_t ID)
       LayoutTreeTabs();
     }break;
     case DELETE_ALL_INOUT: {
-      //      cout << "[TigFrame::HandleMenu] delete formulas" << endl;
+      //      std::cout << "[TigFrame::HandleMenu] delete formulas" << std::endl;
       if (mHisto){
 	mHisto = NULL;
       }
@@ -480,7 +483,7 @@ TigFrame::HandleMenu(Int_t ID)
       LayoutTreeTabs();
     }break;
     case DELETE_TREES: {
-      //      cout << "[TigFrame::HandleMenu] delete trees" << endl;
+      //      std::cout << "[TigFrame::HandleMenu] delete trees" << std::endl;
       if (mHisto){
 	mHisto = NULL;
       }
@@ -497,19 +500,19 @@ TigFrame::HandleMenu(Int_t ID)
       LayoutTreeTabs();
      }break;
     case HISTO_UPDATE_FREQ :{
-      stringstream ss;
+      std::stringstream ss;
       ss << mManager->HistoUpdateInterval();
       char *retstr = new char;
       new TGInputDialog(gClient->GetRoot(),this,"Update every  ... events" ,ss.str().c_str(), retstr );
-      //      cout << "new interval " << retstr << " - int " << atoi(retstr) << endl;
+      //      std::cout << "new interval " << retstr << " - int " << atoi(retstr) << std::endl;
           mManager->SetHistoUpdateInterval( atoi(retstr));      
     }break;
     case GUI_UPDATE_FREQ :{
-      stringstream ss;
+      std::stringstream ss;
       ss << mManager->GuiInterval();
       char *retstr = new char;
       new TGInputDialog(gClient->GetRoot(),this,"Update every  ... events" ,ss.str().c_str(), retstr );
-      //      cout << "new interval " << retstr << " - int " << atoi(retstr) << endl;
+      //      std::cout << "new interval " << retstr << " - int " << atoi(retstr) << std::endl;
           mManager->SetGuiInterval( atoi(retstr));      
     }break;
     }
@@ -631,7 +634,7 @@ TigFrame::SwitchOutfileSetting(Int_t index)
 void
 TigFrame::UpdateHisto()
 {
-  // cout << "[TigFrame::UpdateHisto]" << endl;
+  // std::cout << "[TigFrame::UpdateHisto]" << std::endl;
   if ( (mHisto) && (mCanvas) &&  (mComboTrees->GetSelected()>-1) && mLBHistos->GetSelected()>-1 ){
     mHisto->Draw();
     mCanvas->Update();

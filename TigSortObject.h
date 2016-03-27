@@ -12,9 +12,8 @@ Object for all kind of manipulation that can't be done by TFormula. mWhatToDo de
 #define TIGSORTOBJECT_H
 
 #include <set>
-#include <TigDataObject.h>
+#include "TigDataObject.h"
 
-using namespace std;
 
 class TigSortObject : public TigDataObject
 {
@@ -25,12 +24,12 @@ class TigSortObject : public TigDataObject
  virtual bool Evaluate();
  virtual void IncreaseDataLength(int);
   virtual bool Initialize();
-  virtual bool ParseInput(string line);
- void SetParameters(vector<string> spec){mParameters = spec;}
+  virtual bool ParseInput(std::string line);
+ void SetParameters(std::vector<std::string> spec){mParameters = spec;}
 
  protected:
- vector<string> mParameters;
- set<int> mChannels;
+ std::vector<std::string> mParameters;
+ std::set<int> mChannels;
 };
 
 

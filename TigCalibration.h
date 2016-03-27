@@ -7,22 +7,22 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <TigDataObject.h>
 
-using namespace std;
+#include "TigDataObject.h"
+
 
 class TigCalibration:  public TigDataObject
 {
  public:
   TigCalibration();
 
- virtual bool Evaluate();
- virtual void IncreaseDataLength(int);
- virtual bool Initialize();
-  virtual bool ParseInput(string line);
+  virtual bool Evaluate();
+  virtual void IncreaseDataLength(int);
+  virtual bool Initialize();
+  virtual bool ParseInput(std::string line);
 
  protected:
-  map< int,pair < double,double > > mCalibration;
+  std::map< int,std::pair < double,double > > mCalibration;
 
 };
 

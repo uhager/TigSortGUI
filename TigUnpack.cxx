@@ -3,12 +3,11 @@
 
 #include <iostream>
 #include <vector>
-#include <strings.h>
-#include <stdio.h>
-#include "TigUnpack.h"
-#include <TigManager.h>
+#include <string>
 
-using namespace std;
+#include "TigUnpack.h"
+#include "TigManager.h"
+
 
 //----- TigUnpack
 TigUnpack::TigUnpack(void)
@@ -20,7 +19,7 @@ TigUnpack::TigUnpack(void)
 int
 TigUnpack::ProcessData(WORD* pData, long pMaxLength)
 {
-  //  cout << "[TigUnpack::ProcessData]" << endl;
+  //  std::cout << "[TigUnpack::ProcessData]" << std::endl;
   bool bail = false;
   long pChannel, pValue;
   int eventID = 0;
@@ -32,7 +31,7 @@ TigUnpack::ProcessData(WORD* pData, long pMaxLength)
     {
       type = pData[index] >> 28;
       value = pData[index] & 0x0fffffff;
-      //	  cout << "data[" << index << "] " << hex<< pData[index] << endl;
+      //	  std::cout << "data[" << index << "] " << hex<< pData[index] << std::endl;
       switch( type ){
       case 0x0: 
 	pValue = value & 0x3fff;
@@ -48,17 +47,12 @@ TigUnpack::ProcessData(WORD* pData, long pMaxLength)
       case 0x5:                             /*        Charge */
 	pValue = value & 0x3ffffff; // 27th bit is pile-up
 	// if (pValue > 65500){
-	//   cout << "[TigUnpack::ProcessData] large charge value " << pValue << endl;
+	//   std::cout << "[TigUnpack::ProcessData] large charge value " << pValue << std::endl;
 	// }
 	if (event->Charge() == -1) {
 	  event->SetCharge(pValue); 
-	  // if (event->Address() == ) cout << "[TigUnpack::ProcessData] eventID " << event->EventID() << " address " << event->Address() << " charge " << event->Charge() << endl;
+	  // if (event->Address() == ) std::cout << "[TigUnpack::ProcessData] eventID " << event->EventID() << " address " << event->Address() << " charge " << event->Charge() << std::endl;
 	}else {
-	  // TigManager::Instance().ProcessSignal(event);
-	  // delete event;
-	  // event = new TigEvent;
-	  // event->SetEventID(eventID);
-	  // event->SetCharge(pValue);
 	  // corrupted event, discard
 	  delete event;
 	  return -1;
@@ -99,7 +93,7 @@ TigUnpack::ProcessData(WORD* pData, long pMaxLength)
 	break;
       case 0xe:                                     /* Event Trailer */ 
 	TigManager::Instance().ProcessSignal(event);
-	// cout << "processing event, channel " <<  pChannel << dec<<" value "<< pValue<< endl;
+	// std::cout << "processing event, channel " <<  pChannel << dec<<" value "<< pValue<< std::endl;
 	delete event;
 	event = new TigEvent;
 	break;
@@ -108,7 +102,7 @@ TigUnpack::ProcessData(WORD* pData, long pMaxLength)
 	event->SetLED(pValue);
 	break;
       default: {
-	cerr << "unknown entry " << type << endl;
+	std::cerr << "unknown entry " << type << std::endl;
 	return(-1);
       }
       }
@@ -126,12 +120,12 @@ TigMCSUnpack::TigMCSUnpack(void)
 
 
 //---- ProcessData
-vector<int>
+std::vector<int>
 TigMCSUnpack::ProcessData(WORD* pData, long pMaxLength)
 {
  long pValue;
  long index;
- vector<int> values;
+ std::vector<int> values;
 
  for ( index = 0; index < pMaxLength; index++)
    {

@@ -1,10 +1,13 @@
 // part of TigSortGUI
 // author: Ulrike Hager
 
-#include <TigManager.h>
-#include <TigMidasHandler.h>
+#include <iostream>
 
-//VirtualOdb* gOdb = NULL;
+#include "TigManager.h"
+
+#include "TigMidasHandler.h"
+
+
 
 TigMidasHandler::TigMidasHandler(TigManager *pParent)
   : mParent(pParent)
@@ -45,7 +48,7 @@ TigMidasHandler::HandleMidasEvent(TMidasEvent& pEvent)
   else
     {
       // unknown event type
-      //  cout << "unknown event" << endl;
+      //  std::cout << "unknown event" << std::endl;
       //      pEvent.Print();
     }
 }
@@ -63,7 +66,7 @@ TigMidasHandler::EventHandler(const void*pheader,const void*pdata,int size)
 int 
 TigMidasHandler::OpenMidasFile(const char*fname)
 {
-  //  cout << "[TigMidasHandler::OpenMidasFile] " << fname << endl; 
+  //  std::cout << "[TigMidasHandler::OpenMidasFile] " << fname << std::endl; 
   mFile = new TMidasFile();
  bool tryOpen =  mFile->Open(fname);
   if (!tryOpen)
@@ -94,10 +97,10 @@ TigMidasHandler::OpenMidasFile(const char*fname)
 int 
 TigMidasHandler::ProcessMidasFile(const char *fname, int eventCutoff)
 {
-  //  cout << "[TigMidasHandler::ProcessMidasFile] " << fname << endl;
+  //  std::cout << "[TigMidasHandler::ProcessMidasFile] " << fname << std::endl;
   if (!mFile) OpenMidasFile(fname);
   else if (strcmp(mFile->GetFilename(),fname)!=0) {
-    cout << "[TigMidasHandler::ProcessMidasFile] currently open file does not match requested file, opening requested file " << fname << endl;
+    std::cout << "[TigMidasHandler::ProcessMidasFile] currently open file does not match requested file, opening requested file " << fname << std::endl;
     CloseMidasFile();
     OpenMidasFile(fname);
     //    return 1;
@@ -118,15 +121,15 @@ TigMidasHandler::ProcessMidasFile(const char *fname, int eventCutoff)
 	  if (mOdb) {
 	    delete mOdb;
 	  }
-	  cout << "[TigMidasHandler::ProcessMidasFile] header" << endl ;
+	  std::cout << "[TigMidasHandler::ProcessMidasFile] header" << std::endl;
 	  mOdb = new XmlOdb(event.GetData(),event.GetDataSize()) ;
 	  mParent->SetRunNumber(event.GetSerialNumber() );
 
-	  cout << "[TigMidasHandler::ProcessMidasFile] event run#  " ;
-	  cout  << event.GetSerialNumber() << endl;
-	  cout << "[TigMidasHandler::ProcessMidasFile] parent run#  " ;
-	  cout  << mParent->RunNumber() << endl;
-	  cout.flush();
+	  std::cout << "[TigMidasHandler::ProcessMidasFile] event run#  " ;
+	  std::cout  << event.GetSerialNumber() << std::endl;
+	  std::cout << "[TigMidasHandler::ProcessMidasFile] parent run#  " ;
+	  std::cout  << mParent->RunNumber() << std::endl;
+	  std::cout.flush();
 	}
       else if ((eventId & 0xFFFF) == 0x8001) {}
       else
@@ -138,8 +141,8 @@ TigMidasHandler::ProcessMidasFile(const char *fname, int eventCutoff)
 	
       if((i%5000)==0)
 	{
-	  cout << "." ;
-	  cout.flush();
+	  std::cout << "." ;
+	  std::cout.flush();
 	}
       if((i%mGuiInterval)==0)
 	{

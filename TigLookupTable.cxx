@@ -1,7 +1,13 @@
 // part of TigSortGUI
 // author: Ulrike Hager
 
-#include <TigLookupTable.h>
+#include <iostream>
+#include <sstream>
+
+#include "TigLookupTable.h"
+
+using std::vector;
+using std::string;
 
 TigLookupTable::TigLookupTable()
 {
@@ -24,7 +30,7 @@ TigLookupTable::AddTableLine(vector<double> pTable)
 bool
 TigLookupTable::Evaluate()
 {
-  //  cout << "[TigLookupTable::Evaluate] " << mName <<  endl;
+  //  std::cout << "[TigLookupTable::Evaluate] " << mName <<  std::endl;
   bool check = this->TigDataObject::Evaluate();
   if (!check) return false;
   for (int i = 0; i<InputData.size(); i++ ) {
@@ -70,7 +76,7 @@ TigLookupTable::Evaluate()
 void 
 TigLookupTable::IncreaseDataLength(int d)
 {
-  //  cout << "[TigLookupTable::IncreaseDataLength] " << mName << " - " << d  << endl;
+  //  std::cout << "[TigLookupTable::IncreaseDataLength] " << mName << " - " << d  << std::endl;
   mDataLength *= d;
   this->SetDataLength(mDataLength);
 }
@@ -78,28 +84,28 @@ TigLookupTable::IncreaseDataLength(int d)
 bool
 TigLookupTable::Initialize(void)
 {
-  // cout << "[TigLookupTable::Initialize] " << mName << endl;
+  // std::cout << "[TigLookupTable::Initialize] " << mName << std::endl;
   if (mLookupTable.size()<1){
-      cerr << "[TigLookupTable::Initialize] " << mName << " no table data available" << endl;
+      std::cerr << "[TigLookupTable::Initialize] " << mName << " no table data available" << std::endl;
       return false;    
   }
   if (mInputNames.size() > 2) {
-      cerr << "[TigLookupTable::Initialize] too many inputs" << endl;
+      std::cerr << "[TigLookupTable::Initialize] too many inputs" << std::endl;
       return false;
   }
   for (int i=1; i<mLookupTable.size(); i++){
     if (mLookupTable.at(i).size() != mLookupTable.at(0).size()){
-      cerr << "[TigLookupTable::Initialize] " << mName << " table lines have different lengths" << endl;
+      std::cerr << "[TigLookupTable::Initialize] " << mName << " table lines have different lengths" << std::endl;
       return false;
       } 
   }
   if (mChannels.at(0).size()  != mLookupTable.at(0).size()){
-    cerr << "[TigLookupTable::Initialize] " << mName << " wrong number of x channels" << endl;
+    std::cerr << "[TigLookupTable::Initialize] " << mName << " wrong number of x channels" << std::endl;
     return false;
   }
   if (mInputNames.size() == 1) mChannels.at(1).push_back(0);
   if (mChannels.at(1).size()  != mLookupTable.size()){
-    cerr << "[TigLookupTable::Initialize] " << mName << " wrong number of y channels" << endl;
+    std::cerr << "[TigLookupTable::Initialize] " << mName << " wrong number of y channels" << std::endl;
     return false;
   }
   bool check = this->TigDataObject::Initialize();
@@ -107,7 +113,7 @@ TigLookupTable::Initialize(void)
 
  this->SetNumData(1);
  this->SetDataLength(1 );
-  //cout << "[TigLookupTable::Initialize] " << mName << " initialized " << endl;
+  //std::cout << "[TigLookupTable::Initialize] " << mName << " initialized " << std::endl;
   return true;
 }
 
@@ -116,7 +122,7 @@ TigLookupTable::ParseInput(string line)
 {
   bool result = true;
   string token;
-  istringstream stream(line.c_str());	
+  std::istringstream stream(line.c_str());	
   stream >> token;
 
   if ( token == "" || token[0] == '#') { }  //comment or blank

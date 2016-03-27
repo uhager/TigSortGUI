@@ -4,25 +4,24 @@
 #ifndef TIGMANAGER_H
 #define TIGMANAGER_H
 
-//class TigManager;
-//class TigDependentObject;
-//class TigTree;
-//class TigObject;
 
 #include <string>
 #include <vector>
+
 #include <TFolder.h>
 #include <TObjArray.h>
 #include <TList.h>
 #include <TThread.h>
 #include <TH1.h>
 #include <TMidasEvent.h>
-#include <TigTree.h>
-#include <TigEvent.h>
-#include <TigDetector.h>
-#include <TigScaler.h>
-#include <TigUnpack.h>
-#include <TigMidasHandler.h>
+
+#include "TigTree.h"
+#include "TigEvent.h"
+#include "TigDetector.h"
+#include "TigScaler.h"
+#include "TigUnpack.h"
+#include "TigMidasHandler.h"
+
 #include <RQ_OBJECT.h>
 
 
@@ -36,23 +35,23 @@ class TigManager
 
   static TigManager& Instance(void);
   int AnaEventID(){return mAnaEventID;}
-  bool ConfigFromRootFile(string filename);
+  bool ConfigFromRootFile(std::string filename);
   void ConnectFormulas();
   void DeleteHistos(void);
   void DeleteFormulas(void);
   void DeleteTrees(void);
   bool FlushTreeBuffers(int pCutoff);
   void GenerateTrees(bool trees);
-  vector<TigDataObject*> GetDataObjects(string tree);
-  vector<string> GetDetectors(string tree);
+  std::vector<TigDataObject*> GetDataObjects(std::string tree);
+  std::vector<std::string> GetDetectors(std::string tree);
   bool GetGenerateTrees(){return mGenerateTrees;}
-  vector<string> GetHistos(string tree);
+  std::vector<std::string> GetHistos(std::string tree);
   const char* GetOutFile(){ return mOutFile.c_str();}
   int GetOutfileSetting(){return mSingleOutfile;}
   const char * GetOutPostfix(){return mOutPostfix.c_str();}
   const char* GetOutPrefix(){ return mOutPrefix.c_str();}
   TList * GetRunFiles(){return mRunFiles;}
-  string GetTreeName(int index);
+  std::string GetTreeName(int index);
   int GuiInterval(){return mGuiInterval;}
   TH1 *Histogram(int treeN, int histN);
   void HistoUpdate() ;  // *SIGNAL*
@@ -61,13 +60,13 @@ class TigManager
   bool IsRunning(){return mRunning;}
   bool KeepRunning(){return mKeepRunning;}
   TigMidasHandler *MidasHandler(){return mMidasHandler;}
-  void ParseCalibrationFile(string configFile);
-  void ParseFormHistFile(string configFile);
-  void ParseInputFile(string configFile);
-  void ProcessTig64(TMidasEvent* pEvent, string pBankName);
+  void ParseCalibrationFile(std::string configFile);
+  void ParseFormHistFile(std::string configFile);
+  void ParseInputFile(std::string configFile);
+  void ProcessTig64(TMidasEvent* pEvent, std::string pBankName);
   void ProcessSignal(TigEvent* pEvent);
   void ProcessScaler(TMidasEvent* pEvent);
-  void ProcessScalerData(string pBankName, vector<int> pValues);
+  void ProcessScalerData(std::string pBankName, std::vector<int> pValues);
   void ResetHistos(void);
   void ResetTrees(void);
   void RunRoot(int treeN);
@@ -89,7 +88,7 @@ class TigManager
   void StopRunning();
   void SwitchOutfileSetting(Int_t index){mSingleOutfile = index-1;}
   int TimeStamp(){return mTimeStamp;}
-  vector<string> TreeNames();
+  std::vector<std::string> TreeNames();
   void Write(void){}
 
   bool mHasConfig;
@@ -101,7 +100,7 @@ class TigManager
   // void CreateWindow(void);
   bool OpenTreeOutFile(int treeN);
   // TigDetector *ParseDetector(istream& pStream);
-  void ParsePrimitive(string pToken, istream& pStream);
+  void ParsePrimitive(std::string pToken, istream& pStream);
   // TigScaler *ParseScaler(istream& pStream);
   void RunHisto();
   void ParseTree(istream& pStream);
@@ -115,9 +114,9 @@ class TigManager
   bool mKeepRunning;
   TigMCSUnpack* mMCSUnpack;
   TigMidasHandler *mMidasHandler;
-  string mOutFile;
-  string mOutPrefix;
-  string mOutPostfix;
+  std::string mOutFile;
+  std::string mOutPrefix;
+  std::string mOutPostfix;
   TFile *mRootInfile;
   TFile *mRootOutfile;
   TList *mRunFiles;
@@ -126,7 +125,7 @@ class TigManager
   bool mSingleOutfile;
   int mSteps;
   int mTimeStamp; // MIDAS event time stamp used by all trees
-  vector<TigTree*> mTrees;
+  std::vector<TigTree*> mTrees;
   TigUnpack* mUnpack;
 
  private:		

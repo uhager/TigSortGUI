@@ -2,8 +2,13 @@
 // author: Ulrike Hager
 
 #include <iostream>
+#include <sstream>
+
 #include <TROOT.h>
-#include <TigCut.h>
+
+#include "TigCut.h"
+
+using std::string;
 
 
 TigCut::TigCut()
@@ -22,7 +27,7 @@ TigCut::~TigCut()
 bool
 TigCut::Evaluate()
 {
-  //  cout << "[TigCut::Evaluate] " << mName << endl;
+  //  std::cout << "[TigCut::Evaluate] " << mName << std::endl;
   *IsUpdated = false;
   for (int i = 0; i<InputData.size(); i++ ) {
     if (  *(InputUpdated.at(i)) == false ) return false;
@@ -47,29 +52,29 @@ TigCut::Evaluate()
 bool
 TigCut::Initialize()
 {
-  //  cout << "[TigCut::Initialize] " << mName << endl;
+  //  std::cout << "[TigCut::Initialize] " << mName << std::endl;
   bool check =  this->TigDataObject::Initialize();
   switch (mWhatToDo){
   case TCUTG:{
   if (mNeeded.size() != 2){
-    cout << "[TigCut::Initialize] TCutG " << mName <<" needs 2 inputs, found " << mNeeded.size() << endl;
+    std::cout << "[TigCut::Initialize] TCutG " << mName <<" needs 2 inputs, found " << mNeeded.size() << std::endl;
     return false;
   }
   string processLine = ".x " + mFile;
   gROOT->ProcessLine(processLine.c_str());
   mCut = (TCutG*)gROOT->FindObjectAny(mCutName.c_str());
   if (!mCut) {
-    cout << "[TigCut::Initialize] no cut " << mCutName << endl;
+    std::cout << "[TigCut::Initialize] no cut " << mCutName << std::endl;
     return false;
   }
     }break;
   case RANGECUT:{
     if (mNeeded.size() != 1){
-      cout << "[TigCut::Initialize] " << mName <<  " cut needs 1 inputs" << endl;
+      std::cout << "[TigCut::Initialize] " << mName <<  " cut needs 1 inputs" << std::endl;
       return false;
   }
       if (mMaxRange < mMinRange){
-      cout << "[TigCut::Initialize] " << mName <<  " maximum range smaller than minimum" << endl;
+      std::cout << "[TigCut::Initialize] " << mName <<  " maximum range smaller than minimum" << std::endl;
       return false;
   }
 
@@ -86,7 +91,7 @@ TigCut::ParseInput(string line)
 {
   bool result = false;
   string token;
-  istringstream stream(line.c_str());	
+  std::istringstream stream(line.c_str());	
   stream >> token;
   if (token.compare("tcutg") ==0){
     string file, object;

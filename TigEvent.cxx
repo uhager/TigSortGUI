@@ -3,11 +3,16 @@
 
 #include <iostream>
 #include <cmath>
+
 #include <TMath.h>
 #include <TF1.h>
 #include <TGraph.h>
 #include <TCanvas.h>
-#include <TigEvent.h>
+
+#include "TigEvent.h"
+
+
+using std::vector;
 
 //---- TigEvent
 TigEvent::TigEvent(void)
@@ -23,14 +28,14 @@ TigEvent::TigEvent(void)
   ,mTriggersAccepted(-1)
   ,mTimestampUp(-1)
 {
-  //  cout << "[TigEvent::TigEvent]" << endl;
+  //  std::cout << "[TigEvent::TigEvent]" << std::endl;
   mLinEq.matrix[0][0] = 0;
 }
 
 //---- ~TigEvent
 TigEvent::~TigEvent(void)
 {
-  //  cout << "[TigEvent::~TigEvent]" << endl;
+  //  std::cout << "[TigEvent::~TigEvent]" << std::endl;
   mWaveform.clear();
 }
 
@@ -47,12 +52,12 @@ TigEvent::AddWfSample(int pSample)
 double
 TigEvent::CalcCFDTimeDiff()
 {
-  //  cout << "[TigEvent::CalcCFDTimeDiff]" << endl;
+  //  std::cout << "[TigEvent::CalcCFDTimeDiff]" << std::endl;
   double result;
   double TSns = mTimestamp * 10.0; // 10 ns per sample
   double CFDns = mCFD *10.0/16.0;   // 1/16 sample resolution in CFD
   result = CFDns - TSns ;
-  cout << "[TigEvent::CalcCFDTimeDiff] result " << result << endl;
+  std::cout << "[TigEvent::CalcCFDTimeDiff] result " << result << std::endl;
   return result;
 }
 
@@ -61,11 +66,11 @@ double
 TigEvent::CalcWfBase(vector<double> pParameters)
 {
   if (mWaveform.size()<250){
-    cout << "[TigEvent::CalcWfBase] incomplete waveform, length " << mWaveform.size() << endl;
+    std::cout << "[TigEvent::CalcWfBase] incomplete waveform, length " << mWaveform.size() << std::endl;
     return -1;
   }
   if (pParameters.size()<4){
-    cout << "[TigEvent::CalcWfBase] too few parameters " << pParameters.size() << endl;
+    std::cout << "[TigEvent::CalcWfBase] too few parameters " << pParameters.size() << std::endl;
     return -1;
   }
   double result = 0;
@@ -81,11 +86,11 @@ double
 TigEvent::CalcWfEnergy(vector<double> pParameters)
 {
   if (mWaveform.size()<250){
-    cout << "[TigEvent::CalcWfEnergy] incomplete waveform, length " << mWaveform.size() << endl;
+    std::cout << "[TigEvent::CalcWfEnergy] incomplete waveform, length " << mWaveform.size() << std::endl;
     return -1;
   }
   if (pParameters.size()<6){
-    cout << "[TigEvent::CalcWfEnergy] too few parameters " << pParameters.size() << endl;
+    std::cout << "[TigEvent::CalcWfEnergy] too few parameters " << pParameters.size() << std::endl;
     return -1;
   }
   double result = 0;
@@ -123,12 +128,12 @@ TigEvent::CalcWfMinBin()
 	result = i;
       }
     }
-  // cout << "wf: " ;
+  // std::cout << "wf: " ;
   // for (int i=0; i<mWaveform.size();i++) {
-  //   if (i==result) cout << " _" << mWaveform.at(i) << "_";
-  //   else cout << " " << mWaveform.at(i);
+  //   if (i==result) std::cout << " _" << mWaveform.at(i) << "_";
+  //   else std::cout << " " << mWaveform.at(i);
   //   }
-  // cout << endl;
+  // std::cout << std::endl;
   return result;
 }
 
@@ -137,11 +142,11 @@ double
 TigEvent::CalcWfPeak(vector<double> pParameters)
 {
   if (mWaveform.size()<250){
-    cout << "[TigEvent::CalcWfPeak] incomplete waveform, length " << mWaveform.size() << endl;
+    std::cout << "[TigEvent::CalcWfPeak] incomplete waveform, length " << mWaveform.size() << std::endl;
     return -1;
   }
   if (pParameters.size()<2){
-    cout << "[TigEvent::CalcWfPeak] too few parameters " << pParameters.size() << endl;
+    std::cout << "[TigEvent::CalcWfPeak] too few parameters " << pParameters.size() << std::endl;
     return -1;
   }
   double result = 0;
@@ -153,7 +158,7 @@ TigEvent::CalcWfPeak(vector<double> pParameters)
 double
 TigEvent::CalcWfSinePhase(vector<double> pParameters)
 {
-  //  cout << "[TigEvent::CalcWfSinePhase]" << endl;
+  //  std::cout << "[TigEvent::CalcWfSinePhase]" << std::endl;
   double result = -1;
 
 ////////// use Kris' calculation
@@ -187,7 +192,7 @@ TigEvent::CalcWfSinePhase(vector<double> pParameters)
     result = acos(c)/mLinEq.freq;
   else
      result = (1-acos(c)/(2*TMath::Pi()))*(2*TMath::Pi())/mLinEq.freq;
-  //  cout << "TigEvent::CalcWfSinePhase] " << result << endl;
+  //  std::cout << "TigEvent::CalcWfSinePhase] " << result << std::endl;
 
   result *= 10.0;
   return result;
@@ -234,7 +239,7 @@ TigEvent::Value(int pDataType, vector<double> pParameters)
 int 
 TigEvent::SolveLinEq(lin_eq_type *lin_eq)
 {
-  //  cout << "[TigEvent::SolveLinEq]" << endl;
+  //  std::cout << "[TigEvent::SolveLinEq]" << std::endl;
   lin_eq_type z;
   long double w;
 
@@ -260,7 +265,7 @@ TigEvent::SolveLinEq(lin_eq_type *lin_eq)
 long double  
 TigEvent::SolveLinEqDet(int m, lin_eq_type *lin_eq)
 {
-  //  cout << "[TigEvent::SolveLinEqDet]" << endl;
+  //  std::cout << "[TigEvent::SolveLinEqDet]" << std::endl;
   int i,j;
   long double s;
 
@@ -291,7 +296,7 @@ TigEvent::SolveLinEqDet(int m, lin_eq_type *lin_eq)
 void
 TigEvent::SolveLinEqIni(int N, double T)
 {
-  //  cout << "[TigEvent::SolveLinEqIni]" << endl;
+  //  std::cout << "[TigEvent::SolveLinEqIni]" << std::endl;
   int i;
   double s,sn,snm,s2,s2n,s2nm,c,cn,cnm,c2,c2n,c2nm,w;
   mLinEq.dim=3;

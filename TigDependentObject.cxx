@@ -22,7 +22,7 @@ TigDependentObject::TigDependentObject(int num)
 
 TigDependentObject::~TigDependentObject()
 {
-  //   cout << "[TigDependentObject::~TigDependentObject] " << mName << endl;
+  //   std::cout << "[TigDependentObject::~TigDependentObject] " << mName << std::endl;
   // nothing to do, all your pointer are belong to others.
 }
 
@@ -32,7 +32,7 @@ TigDependentObject::AddCut(string name)
     pair<string,int> par;
     par.first  = name;
     par.second = 0;
-    //    cout << "[TigDependentObject::AddInput] parameter " << i << "  channel/value " << par.second   << endl;
+    //    std::cout << "[TigDependentObject::AddInput] parameter " << i << "  channel/value " << par.second   << std::endl;
     mNeededCuts.push_back(par);
     CutData.push_back( NULL );
 }
@@ -43,7 +43,7 @@ TigDependentObject::AddInput(string name, int id)
     pair<string,int> par;
     par.first  = name;
       par.second = id;
-    //    cout << "[TigDependentObject::AddInput] parameter " << i << "  channel/value " << par.second   << endl;
+    //    std::cout << "[TigDependentObject::AddInput] parameter " << i << "  channel/value " << par.second   << std::endl;
     mNeeded.push_back(par);
     InputUpdated.push_back(NULL);
     InputData.push_back( NULL );
@@ -78,7 +78,7 @@ TigDependentObject::IniInputs()
     else {
       int inputSize = mParent->GetDataSize(parN);
       if (inputSize <1 ) {
-	cout << "[TigDependentObject::IniInputs] input " << parN << " not found for object " << mName << endl;
+	std::cout << "[TigDependentObject::IniInputs] input " << parN << " not found for object " << mName << std::endl;
 	return false;
       }
       else {
@@ -87,7 +87,7 @@ TigDependentObject::IniInputs()
 	}
       }
     }
-    //    cout << "[TigFormula::Initialize] parameter " << i << "  channel/value " << par.second   << endl;
+    //    std::cout << "[TigFormula::Initialize] parameter " << i << "  channel/value " << par.second   << std::endl;
   }
   for (int i=0; i<mCutNames.size(); i++) AddCut(mCutNames.at(i));
   //    for (int i=0; i<mNeeded.size(); i++) 
@@ -130,7 +130,7 @@ TigDependentObject::ParseInput(string line)
 	  return true;
 	}
        else {
-	 //	 cout << "[TigDependentObject::ParseInput] unknown token " << token << endl;
+	 //	 std::cout << "[TigDependentObject::ParseInput] unknown token " << token << std::endl;
 	 return this->TigObject::ParseInput(line);
        }
       return true;

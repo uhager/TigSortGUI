@@ -1,8 +1,14 @@
 // part of TigSortGUI
 // author: Ulrike Hager
 
-#include <TigTree.h>
-#include <TigWaveformHisto.h>
+#include <iostream>
+#include <sstream>
+
+#include "TigTree.h"
+#include "TigWaveformHisto.h"
+
+
+using std::vector;
 
 TigWaveformHisto::TigWaveformHisto()
 {
@@ -27,12 +33,12 @@ TigWaveformHisto::Initialize()
   bool check = this->TigDataObject::Initialize();
   if (!check) return false;
   if (mInputNames.size() > 1){
-    cout << "[TigWaveformHisto::Initialize] " << mName << " too many inputs" << endl;
+    std::cout << "[TigWaveformHisto::Initialize] " << mName << " too many inputs" << std::endl;
     return false;
   }
   if (mAddress < 0) mAddress = mParent->GetAddress(mInputNames.at(0), mChannel);
   if (mAddress < 0) {
-    cout << "[TigWaveformHisto::Initialize] " << mName << " can't find address for input " << mInputNames.at(0) << " ch " << mChannel <<  endl;
+    std::cout << "[TigWaveformHisto::Initialize] " << mName << " can't find address for input " << mInputNames.at(0) << " ch " << mChannel <<  std::endl;
     return false;
   }
   mHisto = new TH1F(mName.c_str(),mName.c_str(),mXbins, 0, mXbins);
@@ -41,11 +47,11 @@ TigWaveformHisto::Initialize()
 
 //---- ParseInput
 bool
-TigWaveformHisto::ParseInput(string line)
+TigWaveformHisto::ParseInput(std::string line)
 {
   bool result = true;
-  string token;
-  istringstream stream(line.c_str());	
+  std::string token;
+  std::istringstream stream(line.c_str());	
   stream >> token;
 
   if ( token.compare("channel") == 0)
@@ -58,7 +64,7 @@ TigWaveformHisto::ParseInput(string line)
     }
   else if ( token.compare("address") == 0)
     {
-      stream >> hex  >> mAddress;
+stream >> std::hex  >> mAddress;
     }
 
   else result = this->TigDataObject::ParseInput(line);

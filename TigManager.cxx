@@ -5,16 +5,19 @@
 #include <sstream>
 #include <stdlib.h>
 #include <fstream>
-//#include <strstream>
+
 #include <TROOT.h>
 #include <TFolder.h>
 #include <TFile.h>
 #include <TSystemFile.h>
 #include <TKey.h>
-#include <TigManager.h>
-#include <TigTree.h>
 
-using namespace std;
+#include "TigManager.h"
+#include "TigTree.h"
+
+
+using std::string;
+using std::vector;
 
 static TigManager* gInstance = NULL;
 
@@ -44,7 +47,7 @@ TigManager::TigManager(void)
 {
 
   if ( gInstance == NULL) {
-    //    cout << "[TigManager] constructor" << endl;
+    //    std::cout << "[TigManager] constructor" << std::endl;
        gInstance = this;
     mMidasHandler = new TigMidasHandler(this);
     //    CreateWindow();
@@ -53,7 +56,7 @@ TigManager::TigManager(void)
   }
   else
     {
-      cout << "[TigManager::TigManager]  Manager is a singleton class and can only be constructed once." << endl;
+      std::cout << "[TigManager::TigManager]  Manager is a singleton class and can only be constructed once." << std::endl;
       exit(1);
     }
 }
@@ -75,7 +78,7 @@ bool
 TigManager::ConfigFromRootFile(string filename)
 {
   if (gSystem->AccessPathName(filename.c_str()) ){
-    cout << "[TigManager::ConfigFromRootFile] can't find file " << filename << endl;
+    std::cout << "[TigManager::ConfigFromRootFile] can't find file " << filename << std::endl;
     return false;
   }
   mRootInfile = TFile::Open(filename.c_str());
@@ -131,7 +134,7 @@ TigManager::DeleteFormulas(void)
 void
 TigManager::DeleteTrees(void)
 {
-  //  cout << "[TigManager::DeleteTrees] " << endl;
+  //  std::cout << "[TigManager::DeleteTrees] " << std::endl;
   vector<TigTree*>::iterator trees;
   for ( trees=mTrees.begin(); trees< mTrees.end(); trees++){
     delete (*trees);
@@ -145,7 +148,7 @@ TigManager::Instance(void)
 {
   if ( !gInstance)
     {
-      cout << "[TigManager::Instance]  Must construct a manager before calling Instance." << endl;
+      std::cout << "[TigManager::Instance]  Must construct a manager before calling Instance." << std::endl;
       exit(1);
     }
 	
@@ -222,7 +225,7 @@ string
 TigManager::GetTreeName(int index)
 {
   if (index>mTrees.size()){
-    cout << "[TigManager::GetTreeName] index out of range " << endl;
+    std::cout << "[TigManager::GetTreeName] index out of range " << std::endl;
     return "";
     }
   return mTrees.at(index)->Name();
@@ -233,7 +236,7 @@ TH1 *
 TigManager::Histogram(int treeN, int histN)
 {
   if (treeN>mTrees.size()){
-    cout << "[TigManager::Histogram] index out of range " << treeN << endl;
+    std::cout << "[TigManager::Histogram] index out of range " << treeN << std::endl;
     return NULL;
     }
   return mTrees.at(treeN)->Histogram(histN);
@@ -250,9 +253,9 @@ TigManager::HistoUpdate()
 bool
 TigManager::OpenTreeOutFile(int treeN)
 {
-  //  cout << "[TigManager::OpenTreeOutFile] " << treeN << endl;
+  //  std::cout << "[TigManager::OpenTreeOutFile] " << treeN << std::endl;
   if ( treeN +1 > mTrees.size() ) {
-    cout << "[TigManager::OpenTreeOutFile] requested tree number " << treeN << " larger than number of trees " << mTrees.size() << endl;
+    std::cout << "[TigManager::OpenTreeOutFile] requested tree number " << treeN << " larger than number of trees " << mTrees.size() << std::endl;
     return false;
   }
   if (mRootOutfile){
@@ -284,12 +287,12 @@ TigManager::ParseFormHistFile(string inputFile)
   string line, token;
   ifstream input(inputFile.c_str());
   // this->Clear();
-  // cout << "Parsing formula/histograms/cut file...";
+  // std::cout << "Parsing formula/histograms/cut file...";
 
   getline(input,line);
   while ( input)
     {
-      istringstream stream(line.c_str());
+      std::istringstream stream(line.c_str());
      
       stream >> token;
       if ( token == "" || token[0] == '#')
@@ -305,12 +308,12 @@ TigManager::ParseFormHistFile(string inputFile)
 	}
       }
       else 
-	cout << "[TigManager::ParseFormHistFile] Unknown token " << token << endl;
+	std::cout << "[TigManager::ParseFormHistFile] Unknown token " << token << std::endl;
 	  
       if ( input)
 	getline(input,line);
     }
-  // cout << "TigManager formula/histogram parsing done.\n";
+  // std::cout << "TigManager formula/histogram parsing done.\n";
 
 }
 
@@ -325,20 +328,20 @@ TigManager::ParseInputFile(string configFile)
   else inputFile = getenv("TIGSORT_INPUT");
   if (inputFile.compare("-") == 0)
     {
-      cout << "[TigManager::ParseInputFile]  No 'TIGSORT_INPUT' input file specified ";
+      std::cout << "[TigManager::ParseInputFile]  No 'TIGSORT_INPUT' input file specified ";
       exit(1);
     }
 
   string line;
   ifstream input(inputFile.c_str());
   //  this->Clear();
-  // cout << "Parsing TigSort specification file...";
+  // std::cout << "Parsing TigSort specification file...";
 
   getline(input,line);
   while ( input)
     {
       string token;
-      istringstream stream(line.c_str());
+      std::istringstream stream(line.c_str());
      
       stream >> token;
       if ( token == "" || token[0] == '#')
@@ -355,7 +358,7 @@ TigManager::ParseInputFile(string configFile)
       if ( input)
 	getline(input,line);
     }
-  // cout << "TigManager input parsing done.\n";
+  // std::cout << "TigManager input parsing done.\n";
   mHasConfig = true;
   mHasRootConfig = false;
 }
@@ -369,7 +372,7 @@ TigManager::ParsePrimitive(string pToken, istream& pStream)
     this->ParseTree(pStream);
   else
     {
-      cout << "[TigManager::ParsePrimitive]  Unknown primitive token: " << pToken << endl;
+      std::cout << "[TigManager::ParsePrimitive]  Unknown primitive token: " << pToken << std::endl;
     }
 }
 
@@ -385,12 +388,12 @@ TigManager::ParseTree(istream& pStream)
   getline(pStream,line);
   while ( pStream && !bail)
     {
-      istringstream stream(line.c_str());
+      std::istringstream stream(line.c_str());
       string token;
       stream >> token;
       if ( token == "" || token[0] == '#')
 	{
-	  //	  cout << "[TigManager::ParseTree] comment " << line << endl;
+	  //	  std::cout << "[TigManager::ParseTree] comment " << line << std::endl;
 	  //comment or blank
 	}
       else if ( token.compare("description") == 0)
@@ -403,15 +406,15 @@ TigManager::ParseTree(istream& pStream)
       else if ( token.compare("name") == 0)
 	{	
 	  stream >> token;
-	  cout << ".(" << token << ").";
+	  std::cout << ".(" << token << ").";
 	  tree->ChangeName(token);
 	}
       else if ( token.compare("detector") == 0)
 	{
-	  //	  cout << "[TigManager::ParseTree] << found new detector " << endl;
+	  //	  std::cout << "[TigManager::ParseTree] << found new detector " << std::endl;
 	  tree->ParseDetector(pStream);
 	  if (!mUnpack) mUnpack = new TigUnpack;	
-	  //	  cout << "[TigManager::ParseTree] << added new detector " << endl;
+	  //	  std::cout << "[TigManager::ParseTree] << added new detector " << std::endl;
 	}
       else if ( token.compare("scaler") == 0)
 	{
@@ -419,7 +422,7 @@ TigManager::ParseTree(istream& pStream)
 	  if (!mMCSUnpack) mMCSUnpack = new TigMCSUnpack;	
 	}
       else{
-	cout << "[TigManager::ParseTree] unknown line " << line << endl;
+	std::cout << "[TigManager::ParseTree] unknown line " << line << std::endl;
       }
       if ( !bail)
 	getline(pStream,line);
@@ -438,7 +441,7 @@ TigManager::ProcessScaler(TMidasEvent* pEvent)
 {
   if (mMCSUnpack)
     {
-      //  cout << "Processing scaler" << endl;
+      //  std::cout << "Processing scaler" << std::endl;
       WORD*	data;
       int	bankLength, bankType;
       void *ptr;
@@ -458,7 +461,7 @@ TigManager::ProcessScaler(TMidasEvent* pEvent)
 	  data = (WORD*) ptr;
 	  vector<int> values = mMCSUnpack->ProcessData(data, bankLength); 
 	  this->ProcessScalerData(bankName,values);
-	  //      cout << "[TigManager::ProcessScaler] after unpacking: index = " << index << " - bankLength = " << bankLength << endl;
+	  //      std::cout << "[TigManager::ProcessScaler] after unpacking: index = " << index << " - bankLength = " << bankLength << std::endl;
 	}
       bool fillTrees = false;
       for ( trees=mTrees.begin(); trees< mTrees.end(); trees++){
@@ -494,7 +497,7 @@ TigManager::ProcessTig64(TMidasEvent* pEvent, string pBankName)
 {
   if (mUnpack)
     {
-      // cout << "Processing Tig64" << endl;
+      // std::cout << "Processing Tig64" << std::endl;
       WORD*	data;
       // UInt_t	bankLength;
       int	bankLength, bankType;
@@ -511,7 +514,7 @@ TigManager::ProcessTig64(TMidasEvent* pEvent, string pBankName)
 	  check = mUnpack->ProcessData(data+index, bankLength-index); 
 	  if (check < 0) break;
 	  else index += check;
-	  //      cout << "[TigManager::ProcessTig64] after unpacking: index = " << index << " - bankLength = " << bankLength << endl;
+	  //      std::cout << "[TigManager::ProcessTig64] after unpacking: index = " << index << " - bankLength = " << bankLength << std::endl;
 	}
     }
 }
@@ -537,15 +540,15 @@ void
 TigManager::RunRoot(int treeN)
 {
   if (treeN+1 > mTrees.size() ){ 
-    cout << "[TigManager::RunRoot] selected tree number larger than number of trees" << endl;
+    std::cout << "[TigManager::RunRoot] selected tree number larger than number of trees" << std::endl;
     return;
   }
   if (!mRunFiles->GetSize()){ 
-    cout << "[TigManager::RunRoot] no input files" << endl;
+    std::cout << "[TigManager::RunRoot] no input files" << std::endl;
     return;
   }
   if (mHasRootConfig && !mHasRootFiles){
-    cout << "[TigManager::RunRoot] configured for reading root files, but no root files loaded" << endl;
+    std::cout << "[TigManager::RunRoot] configured for reading root files, but no root files loaded" << std::endl;
     return;
   }
    TSystemFile *file;
@@ -560,14 +563,14 @@ TigManager::RunRoot(int treeN)
     }
     while ( (file=(TSystemFile*)next())  && (mKeepRunning) ) {
       fname = file->GetName();
-      //      cout << "\n running " << fname << endl;
+      //      std::cout << "\n running " << fname << std::endl;
       (mTrees.at(treeN))->AddInputFile(fname);
       }
     mTrees.at(treeN)->ResetTree();
     mTrees.at(treeN)->InitInputChainAddresses();
     //	FlushTreeBuffers(0);
     mTrees.at(treeN)->RunChain();
-  cout << endl;
+  std::cout << std::endl;
   if (mGenerateTrees)  this->SaveTrees(treeN);
   mAnaEventID = 0; 
   mRunning = false;
@@ -590,7 +593,7 @@ TigManager::RunHisto()
 
     while ( (file=(TSystemFile*)next())  && (mKeepRunning) ) {
       fname = file->GetName();
-      //  cout << "\n running " << fname << endl;
+      //  std::cout << "\n running " << fname << std::endl;
       int runN =  mMidasHandler->OpenMidasFile(fname.Data());
       if  (runN > -1) {
 	mMidasHandler->ProcessMidasFile(fname.Data(),0);
@@ -599,7 +602,7 @@ TigManager::RunHisto()
       }
     }
 
-  cout << endl;
+  std::cout << std::endl;
   mAnaEventID = 0; 
   mRunning = false;
 }
@@ -616,11 +619,11 @@ TigManager::Run()
   for (trees= mTrees.begin(); trees < mTrees.end(); trees++) (*trees)->SetDirectory(mRootOutfile);
   */
   if (!mRunFiles->GetSize()){ 
-    cout << "[TigManager::Run] no input files" << endl;
+    std::cout << "[TigManager::Run] no input files" << std::endl;
     return;
   }
   else if(mHasConfig && !mHasMidasFiles){
-    cout << "[TigManager::Run] configured for reading MIDAS files, but no MIDAS files loaded" << endl;
+    std::cout << "[TigManager::Run] configured for reading MIDAS files, but no MIDAS files loaded" << std::endl;
     return;
   } 
 
@@ -632,7 +635,7 @@ TigManager::Run()
       return;
     }
   }
-  // cout << "[TigManager::Run] single file " << mSingleOutfile << " name " << mOutFile << endl; 
+  // std::cout << "[TigManager::Run] single file " << mSingleOutfile << " name " << mOutFile << std::endl; 
 
    TSystemFile *file;
    TString fname;
@@ -642,23 +645,23 @@ TigManager::Run()
     bool check = true;
     if (mSingleOutfile == 0)  check = OpenTreeOutFile(-1);
     if (!check) {
-      cout << "[TigManager::RunTree] can't open output file " << mRootOutfile << endl;
+      std::cout << "[TigManager::RunTree] can't open output file " << mRootOutfile << std::endl;
       return;
     }
 
    while ( (file=(TSystemFile*)next())  && (mKeepRunning) ) {
       fname = file->GetName();
-      // cout << "\n [TigManager::Run] running " << fname << endl;
+      // std::cout << "\n [TigManager::Run] running " << fname << std::endl;
       int runN =  mMidasHandler->OpenMidasFile(fname.Data());
       if  (runN > -1) {
 	if (mSingleOutfile == 1) {
 	  ResetTrees();
-	  stringstream ss;
+	  std::stringstream ss;
 	  ss << mOutPrefix << runN << mOutPostfix << ".root" ;
 	  mOutFile = ss.str();
 	  check = OpenTreeOutFile(-1);
 	  if (!check) {
-	    cout << "[TigManager::RunTree] can't open output file " << mRootOutfile << endl;
+	    std::cout << "[TigManager::RunTree] can't open output file " << mRootOutfile << std::endl;
 	    return;
 	  }
 	}
@@ -670,7 +673,7 @@ TigManager::Run()
       }
     }
     if (mSingleOutfile == 0 ) SaveTrees(-1);
-  cout << endl;
+  std::cout << std::endl;
   mAnaEventID = 0; 
   mRunning = false;
 }
@@ -685,7 +688,7 @@ TigManager::SaveHistos()
   }
   mRootOutfile  = new TFile(mOutFile.c_str(),"RECREATE");
   if (! mRootOutfile) {
-    cerr << "[TigManager::SaveHistos] can't open file " << mOutFile << endl;
+    std::cerr << "[TigManager::SaveHistos] can't open file " << mOutFile << std::endl;
     return ;
   }
   mRootOutfile->cd();
@@ -704,7 +707,7 @@ void
 TigManager::SaveTrees(int treeN)
 {
   if ( treeN +1 > mTrees.size() ) {
-    cout << "[TigManager::SaveTrees] requested tree number " << treeN << " larger than number of trees " << mTrees.size() << endl;
+    std::cout << "[TigManager::SaveTrees] requested tree number " << treeN << " larger than number of trees " << mTrees.size() << std::endl;
     return;
   }
 
@@ -756,7 +759,7 @@ TigManager::SetRunFiles(TList *list)
 bool
 TigManager::SetWriteDet(int treeN, int det)
 {
-  //  cout << "[TigManager::SetWriteDet] treeN " << treeN << " - det " << det << endl;
+  //  std::cout << "[TigManager::SetWriteDet] treeN " << treeN << " - det " << det << std::endl;
   if (treeN+1 > mTrees.size() ) return false; 
   return mTrees.at(treeN)->ToggleWrite(det);
 
@@ -768,7 +771,7 @@ TigManager::StepMidasFile()
 {
   
   if (!mRunFiles){ 
-    cout << "[TigManager::RunTree] no input MIDAS files" << endl;
+    std::cout << "[TigManager::RunTree] no input MIDAS files" << std::endl;
     return;
   }
   //  ResetTrees();
@@ -783,25 +786,25 @@ TigManager::StepMidasFile()
     mSteps = 0;
       fname = file->GetName();
     while (  (mKeepRunning) ) {
-      //      cout << "\n running " << fname << endl;
+      //      std::cout << "\n running " << fname << std::endl;
       //  int runN =  mMidasHandler->OpenMidasFile(fname.Data());
       // if  (runN > -1) {
 	int check = mMidasHandler->ProcessMidasFile(fname.Data(),0);
-	//	cout << "[TigManager::StepMidasFile] check1 " << check << endl;  
+	//	std::cout << "[TigManager::StepMidasFile] check1 " << check << std::endl;  
 	if (check ==1) {
-	  //	  cout << "[TigManager::StepMidasFile] file ended "  << endl;  
+	  //	  std::cout << "[TigManager::StepMidasFile] file ended "  << std::endl;  
 	  bool check = FlushTreeBuffers(1);
-	  //  cout << "[TigManager::StepMidasFile] check2 " << check << endl;  
+	  //  std::cout << "[TigManager::StepMidasFile] check2 " << check << std::endl;  
 	  if (check) {
 	  mMidasHandler->CloseMidasFile();
 	  file = (TSystemFile*)next();
-	  // cout << "[TigManager::StepMidasFile] next file  "  << endl;  
+	  // std::cout << "[TigManager::StepMidasFile] next file  "  << std::endl;  
 	  }
 	}	//      }
     }
     //	FlushTreeBuffers();
 
-    //  cout << endl;
+    //  std::cout << std::endl;
     //  this->StepTrees(false);
   mRunning = false;
 }
@@ -823,7 +826,7 @@ TigManager::StopRunning()
   // if (mRootOutfile){
   //   mRootOutfile->Write();
   //   delete mRootOutfile;
-  //   cout << endl;
+  //   std::cout << std::endl;
   // }
   mRunning = false;
 }

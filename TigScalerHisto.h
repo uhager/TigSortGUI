@@ -6,12 +6,10 @@
 
 #include <TH1.h>
 #include <TH2.h>
-//#include <TigObject.h>
-//#include <TigTree.h>
-//#include <TigDataObject.h>
-#include <TigHistoObject.h>
 
-using namespace std;
+#include "TigHistoObject.h"
+
+
 
 class TigScalerHisto :  public TigHistoObject //, public TigDataObject
 {
@@ -19,13 +17,13 @@ class TigScalerHisto :  public TigHistoObject //, public TigDataObject
   TigScalerHisto();
   virtual bool Evaluate();
   virtual bool Initialize();
-  virtual bool ParseInput(string line);
- void SetChannel(int ch){mChannel= ch;}
- void SetChannelName(string ch){mChannelName = ch;}
+  virtual bool ParseInput(std::string line);
+  void SetChannel(int ch){mChannel= ch;}
+  void SetChannelName(std::string ch){mChannelName = ch;}
   void SetXMax(int);
 
  protected:
-   string mChannelName; 
+  std::string mChannelName; 
   int mChannel;
   //  Bool_t is2D;
   int xMax;

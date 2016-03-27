@@ -7,29 +7,24 @@
 
 #include <string>
 #include <vector>
-#include <sstream>
-#include <iostream>
-//#include <TObject.h>
 
-using namespace std;
 
 class TigObject
 {
  public:
   TigObject();
 
-  void ChangeDescription(string pDesc) { mDescription = pDesc; }
-  void ChangeName(string pName)	{ mName = pName; }
-  string Description(){return mDescription;}
-  string Name(void) { return mName; }
-  virtual bool ParseInput(string line);
-  string ObjType;
+  void ChangeDescription(std::string pDesc) { mDescription = pDesc; }
+  void ChangeName(std::string pName)	{ mName = pName; }
+  std::string Description(){return mDescription;}
+  std::string Name(void) { return mName; }
+  virtual bool ParseInput(std::string line);
+  std::string ObjType;
 
  protected:
-  string mDescription;
-  string mName;
+  std::string mDescription;
+  std::string mName;
 
-  //  ClassDef(TigObject,0);
 };
 
 

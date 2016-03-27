@@ -5,13 +5,14 @@
 #define TIGDETFRAME_H
 
 #include <string>
+
 #include <TGButton.h>
 #include <TGLayout.h>
 #include <TGLabel.h>
 #include <TGListBox.h>
-#include <TigDataObject.h>
 
-using namespace std;
+#include "TigDataObject.h"
+
 
 class TigFrame;
 

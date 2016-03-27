@@ -3,24 +3,24 @@
 
 #include <vector>
 #include <string>
-#include <TigDataObject.h>
 
-using namespace std;
+#include "TigDataObject.h"
+
 
 class TigLookupTable:  public TigDataObject
 {
  public:
   TigLookupTable();
  
-  void AddTableLine(vector<double> pTable);
+  void AddTableLine(std::vector<double> pTable);
   virtual bool Evaluate();
   virtual void IncreaseDataLength(int);
   virtual bool Initialize();
-  virtual bool ParseInput(string line);
-  void SetXChannels(vector<int> pChannels);
-  void SetYChannels(vector<int> pChannels);
+  virtual bool ParseInput(std::string line);
+  void SetXChannels(std::vector<int> pChannels);
+  void SetYChannels(std::vector<int> pChannels);
 
  protected:
-  vector<vector<double> > mLookupTable;
-  vector<vector<int> > mChannels;
+  std::vector<std::vector<double> > mLookupTable;
+  std::vector<std::vector<int> > mChannels;
 };

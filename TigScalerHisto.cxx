@@ -2,9 +2,13 @@
 // author: Ulrike Hager
 
 #include <iostream>
-#include <TigTree.h>
-#include <TigScalerHisto.h>
+#include <sstream>
 
+#include "TigTree.h"
+#include "TigScalerHisto.h"
+
+
+using std::string;
 
 TigScalerHisto::TigScalerHisto()
   :TigHistoObject()
@@ -20,58 +24,58 @@ TigScalerHisto::TigScalerHisto()
 bool
 TigScalerHisto::Initialize()
 {
-  // cout << "TigScalerHisto " << mName << " initialising" << endl;
+  // std::cout << "TigScalerHisto " << mName << " initialising" << std::endl;
   bool check =  this->TigDataObject::Initialize();
    if (!check) return check;
    if (!xMax){
-     cout << "[TigScalerHisto::Initialize] no maximum x set for " << mName << endl;
+     std::cout << "[TigScalerHisto::Initialize] no maximum x set for " << mName << std::endl;
      return false;
    }
     if (mNeeded.size() != 1){
-      cout << "[TigScalerHisto::Initialize] too many inputs for " << mName << endl;
+      std::cout << "[TigScalerHisto::Initialize] too many inputs for " << mName << std::endl;
       return false;
    }
     mChannel = mParent->GetScalerIndex(mChannelName);
     if (mChannel < 0 ){
-      cout << "[TigScalerHisto::Initialize]  scaler " << mChannelName << " not found for " << mName << endl;
+      std::cout << "[TigScalerHisto::Initialize]  scaler " << mChannelName << " not found for " << mName << std::endl;
       return false;
    }
     mHisto = new TH1F(mName.c_str(),mChannelName.c_str(),xMax, 0, xMax);
-      //      cout << "TigScalerHisto " << mName << " test 1" << endl;     
-      //cout << "TigScalerHisto " << mName << " test 2" << endl;     
-    //   cout << "TigScalerHisto " << mName << " initialised" << endl;
+      //      std::cout << "TigScalerHisto " << mName << " test 1" << std::endl;     
+      //std::cout << "TigScalerHisto " << mName << " test 2" << std::endl;     
+    //   std::cout << "TigScalerHisto " << mName << " initialised" << std::endl;
      return true;
   }
 
 bool
 TigScalerHisto::Evaluate()
 {
-  //  cout << "[TigScalerHisto::Evaluate] " << mName << endl;
+  //  std::cout << "[TigScalerHisto::Evaluate] " << mName << std::endl;
   bool check = this->TigDataObject::Evaluate();
   if (!check) return false;
 
    int needed = mNeeded.size(); 
   if (  needed != InputData.size() ) {
-    cout << "[TigScalerHisto::Fill] parameter mismatch: needed " << needed << " received: " << InputData.size() << endl;
+    std::cout << "[TigScalerHisto::Fill] parameter mismatch: needed " << needed << " received: " << InputData.size() << std::endl;
     return  true;
   }
   if (  mChannel  > (InputData.at(0))->first ) {
-    cout << "[TigScalerHisto::Fill] needed channel  " << mChannel << " out of range of input data for" << mName << endl;
+    std::cout << "[TigScalerHisto::Fill] needed channel  " << mChannel << " out of range of input data for" << mName << std::endl;
     return  true;
   }
   
  for (int i = 0; i<needed; i++ ) {
    if ( *(InputUpdated.at(i)) == false ) return false;
   }
-  // cout << " before:  " << endl; ;
- //for (int j = 0; j<needed; j++)  cout << " &InputData.at(j)->size() " << &(InputData.at(j)->size())  << " - InputData.at(j)->second " << (InputData.at(j)->second) << endl;
- // cout << endl;
+  // std::cout << " before:  " << std::endl; ;
+ //for (int j = 0; j<needed; j++)  std::cout << " &InputData.at(j)->size() " << &(InputData.at(j)->size())  << " - InputData.at(j)->second " << (InputData.at(j)->second) << std::endl;
+ // std::cout << std::endl;
 
  mHisto->Fill(mParent->ScEventID(),(InputData.at(0))->second[mChannel]);
-          // cout << "after:  " << endl; ;
-  // for (int j = 0; j<needed; j++)  cout << " &InputData.at(j)->size() " << &(InputData.at(j)->size())  << " - InputData.at(j)->second " << (InputData.at(j)->second) << endl;
-  // cout << endl;
- // cout << "[TigScalerHisto::Evaluate] done" << endl;
+          // std::cout << "after:  " << std::endl; ;
+  // for (int j = 0; j<needed; j++)  std::cout << " &InputData.at(j)->size() " << &(InputData.at(j)->size())  << " - InputData.at(j)->second " << (InputData.at(j)->second) << std::endl;
+  // std::cout << std::endl;
+ // std::cout << "[TigScalerHisto::Evaluate] done" << std::endl;
   return true;
 }
 
@@ -80,7 +84,7 @@ TigScalerHisto::ParseInput(string line)
 {
   bool result = false;
   string token;
-  istringstream stream(line.c_str());	
+std::istringstream stream(line.c_str());	
   stream >> token;
 
   if ( token.compare("maxbins") == 0)
@@ -106,7 +110,7 @@ TigScalerHisto::ParseInput(string line)
 void 
 TigScalerHisto::SetXMax(int max)
 {
-  //  cout << "TigScalerHisto " << mName << " x binning " << bins << ", " << min << ", " << max << endl;
+  //  std::cout << "TigScalerHisto " << mName << " x binning " << bins << ", " << min << ", " << max << std::endl;
   xMax = max;
 }
 

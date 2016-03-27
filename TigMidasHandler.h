@@ -5,15 +5,6 @@
 #define TIGMIDASHANDLER_H
 
 class TigMidasHandler;
-#include <stdio.h>
-#include <sys/time.h>
-#include <string>
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <iomanip>
-#include <assert.h>
-#include <signal.h>
 
 #include <TMidasEvent.h>
 #include <TMidasFile.h>
@@ -32,7 +23,6 @@ class TigMidasHandler;
 
 class TigManager;
 
-using namespace std;
 
 class TigMidasHandler
 {

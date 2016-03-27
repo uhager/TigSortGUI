@@ -6,9 +6,8 @@
 
 #include <TFormula.h>
 
-#include <TigDataObject.h>
+#include "TigDataObject.h"
 
-using namespace std;
 
 class TigFormula :  public TigDataObject
 {
@@ -19,9 +18,9 @@ class TigFormula :  public TigDataObject
   virtual bool Evaluate();
   virtual void IncreaseDataLength(int);
   virtual bool Initialize();
-  virtual bool ParseInput(string line);
+  virtual bool ParseInput(std::string line);
 
-  void SetFormula(string formula);
+  void SetFormula(std::string formula);
    
  protected:
   TFormula *mFormula;

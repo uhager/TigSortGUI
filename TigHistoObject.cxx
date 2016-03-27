@@ -12,7 +12,7 @@ TigHistoObject::TigHistoObject()
 TigHistoObject::~TigHistoObject()
 {
   if (mHisto) delete mHisto;
-  //  cout << "[TigHistoObject::~TigHistoObject] " << mName << endl; 
+  //  std::cout << "[TigHistoObject::~TigHistoObject] " << mName << std::endl; 
 }
 
 //---- Reset
@@ -26,6 +26,6 @@ TigHistoObject::Reset()
 void
 TigHistoObject::Write()
 {
-  //  cout << "TigHisto " << mName << " wrinting" << endl;
+  //  std::cout << "TigHisto " << mName << " wrinting" << std::endl;
   mHisto->Write();
 }

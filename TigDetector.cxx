@@ -3,8 +3,12 @@
 
 #include <sstream>
 #include <iostream>
-#include <TigDetector.h>
 
+#include "TigDetector.h"
+
+using std::vector;
+using std::string;
+using std::map;
 
 //---- TigDetector
 TigDetector::TigDetector(void)
@@ -48,9 +52,9 @@ TigDetector::AddSignals(int minCh, int maxCh, int minAdd, int maxAdd)
   int addStep;
   if (minAdd < maxAdd) addStep = (maxAdd - minAdd +1)/numCh;
   else addStep = (maxAdd - minAdd -1)/numCh;
-  //  cout << "[TigDetector::AddSignals] " << mName << " " <<  minAdd  << " " << hex << minAdd << " maxAdd " << maxAdd << " addStep " << dec << addStep << endl; 
+  //  std::cout << "[TigDetector::AddSignals] " << mName << " " <<  minAdd  << " " << std::hex << minAdd << " maxAdd " << maxAdd << " addStep " << dec << addStep << std::endl; 
   for (int i=minCh, add = minAdd; i<maxCh+1; i = i+chStep, add=add+addStep){
-    //cout << "[TigDetector::AddSignals] adding " << dec<< i << " - " << hex << add << endl; 
+    //std::cout << "[TigDetector::AddSignals] adding " << dec<< i << " - " << std::hex << add << std::endl; 
     this->AddSignal(i, add);
   }
 }
@@ -60,7 +64,7 @@ TigDetector::AddSignals(int minCh, int maxCh, int minAdd, int maxAdd)
 void
 TigDetector::Clear()
 {
-  //  cout << "[TigDetector::Clear]" << endl;
+  //  std::cout << "[TigDetector::Clear]" << std::endl;
     if (this->DataLength() == 1) mEventData[0] = 0; 
   mHits = 0;
   this->TigDataObject::Clear();
@@ -75,7 +79,7 @@ TigDetector::Evaluate()
     if ((Data.at(0))->first > 0) {
 	//	for (int i=1;i<Data.size(); i++) Data.at(i)->first = Data.at(0)->first ;
       // if  (this->DataSize()==2){
-      // 	  cout << "[TigDetector::Evaluate] channel/value size mismatch"  << endl;
+      // 	  std::cout << "[TigDetector::Evaluate] channel/value size mismatch"  << std::endl;
       // 	  return false;
       // }
       *IsUpdated = true; 
@@ -113,11 +117,11 @@ TigDetector::GetAddress(int pChannel)
 bool
 TigDetector::Initialize(void)
 {
-  // cout << "[TigDetector::Initialize] " << mName << endl;
+  // std::cout << "[TigDetector::Initialize] " << mName << std::endl;
   bool check = this->TigDataObject::Initialize();
  if (!check) return false;
   long numAddresses = mAddresses.size();
-  //  cout << "[TigDetector::Initialize] numAddresses " << numAddresses << endl;
+  //  std::cout << "[TigDetector::Initialize] numAddresses " << numAddresses << std::endl;
   mEventData = new double[numAddresses];	
   mEventChannels = new double[numAddresses];
   for (int i = 0; i<numAddresses; i++) {
@@ -126,7 +130,7 @@ TigDetector::Initialize(void)
   }
   //  if (numAddresses == 1) this->SetNumData(1);
   this->SetDataLength( numAddresses);
-  //cout << "[TigDetector::Initialize] " << mName << " initialized " << endl;
+  //std::cout << "[TigDetector::Initialize] " << mName << " initialized " << std::endl;
   return true;
 }
 
@@ -134,10 +138,10 @@ TigDetector::Initialize(void)
 bool
 TigDetector::ParseInput(string line)
 {
-  //  cout << "[TigDetector::ParseInput] " << mName << endl; 
+  //  std::cout << "[TigDetector::ParseInput] " << mName << std::endl; 
   bool result = true;
   string token;
-  istringstream stream(line.c_str());	
+  std::istringstream stream(line.c_str());	
   stream >> token;
 
   if ( token == "" || token[0] == '#') { }  //comment or blank
@@ -162,27 +166,27 @@ TigDetector::ParseSignal(string line)
 {
   bool result = true;
   string token;
-  istringstream stream(line.c_str());	
+  std::istringstream stream(line.c_str());	
   stream >> token;
   if ( token == "" || token[0] == '#') { }  //comment or blank
   else if ( token.compare("range") == 0)
     {
       int minCh, maxCh, minAdd, maxAdd;
-      stream >> minCh >> maxCh >> hex >> minAdd >> hex >> maxAdd;
+      stream >> minCh >> maxCh >> std::hex >> minAdd >> std::hex >> maxAdd;
       this->AddSignals(minCh, maxCh, minAdd, maxAdd);
     }
   else if ( token.compare("end") == 0) {
-    //    cout << "[TigDetector::ParseSignal] " << mName << " end of signals" << endl;
+    //    std::cout << "[TigDetector::ParseSignal] " << mName << " end of signals" << std::endl;
     result = false;
   }
   else
     {
       int channel;
-      istringstream ( token ) >> channel;
+      std::istringstream ( token ) >> channel;
       int address;				
-      stream >> hex >> address;
+      stream >> std::hex >> address;
       this->AddSignal(channel,address);
-      //      cout << "added signal: " << channel << " - " << address << endl;
+      //      std::cout << "added signal: " << channel << " - " << address << std::endl;
     }
   return result; 
 }
@@ -191,7 +195,7 @@ TigDetector::ParseSignal(string line)
 bool
 TigDetector::ProcessEvent(double* pData)
 {
-  //cout << "[TigDetector::ProcessEvent]" << mName << endl;
+  //std::cout << "[TigDetector::ProcessEvent]" << mName << std::endl;
   *this->IsUpdated = false;
   mHits = 0;
   for (int i=0; i<this->DataLength(); i++)
@@ -206,7 +210,7 @@ TigDetector::ProcessEvent(double* pData)
     //    if (this->DataSize() == 1) this->Update(mHits, mEventData);
     this->Update(mHits,mEventChannels, mEventData);
   }
- //  cout << "[TigDetector::ProcessEvent] end" << endl;
+ //  std::cout << "[TigDetector::ProcessEvent] end" << std::endl;
   return true;
 }
 
@@ -222,10 +226,10 @@ TigDetector::ProcessSignal(TigEvent* pEvent, double (&pData)[2])
       result = true;
       pData[0] = mAddresses[addr]; 
       pData[1] = pEvent->Value(mDataType, mParameters);
-      //      cout << "[TigDetector::ProcessSignal] name " << mName << " datatype " << mDataType << " channel " << pData[0] << " data " << pData[1] << endl;
+      //      std::cout << "[TigDetector::ProcessSignal] name " << mName << " datatype " << mDataType << " channel " << pData[0] << " data " << pData[1] << std::endl;
       return result;
     }
-  // cout << "unknown channel " << pChannel << endl;
+  // std::cout << "unknown channel " << pChannel << std::endl;
   return result;
 }
 
@@ -264,10 +268,10 @@ TigDetector::SetDataType(string pTypeString, vector<double> pParameters)
       default: mParameters = pParameters;
 	//      }      
     }
-    //cout << "[TigDetector::SetDataType] parameters: " ;
-    // for (int i=0; i<mParameters.size(); i++) cout << mParameters.at(i) << ", ";
-    //cout << endl;
+    //std::cout << "[TigDetector::SetDataType] parameters: " ;
+    // for (int i=0; i<mParameters.size(); i++) std::cout << mParameters.at(i) << ", ";
+    //std::cout << std::endl;
   }
-  //  cout << "[TigDetector::SetDataType] " << pTypeString << " data type is " << mDataType << endl;
+  //  std::cout << "[TigDetector::SetDataType] " << pTypeString << " data type is " << mDataType << std::endl;
 }
 
