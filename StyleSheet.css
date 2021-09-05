@@ -1,0 +1,320 @@
+html {
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+/*font-family: Palatino, times, serif*/
+font-family: Helvetica, "sans-serif";
+}
+#upperTitel
+{
+position: fixed;
+  left:0;
+  top:0px;
+z-index:4;
+width:100%;
+height:3em;
+padding: 0px 0 15px 0; /*top right bottom left*/
+background-color:MidnightBlue;
+text-align:center;
+color:WhiteSmoke;
+}
+#main
+{
+position: absolute;
+  left:0px;
+  top:3em;
+  padding: 0px 2% 0 2%; /*top right bottom left*/
+//margin-top: 60px;
+//margin-left: 2%;
+width:100%;
+min-height:93%;
+background-color:WhiteSmoke;
+color: #181818;
+} 
+#icon
+{
+position: absolute;
+  right:10px;
+}
+
+hr
+{ 
+background-color:MidnightBlue;
+width:90%;
+height:2px;
+border:0;
+margin:0;
+margin-left:auto;
+margin-right:auto;
+padding:0;
+ }
+
+ul
+{
+float:left;
+width:90%;
+padding:0;
+margin:0;
+list-style: none;
+}
+
+li
+ {
+  padding:0 5px 0 0px;
+#  list-style-type:none;
+  }
+
+ul li:before {
+  content: "-";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+  color:GoldenRod; /* Change the color */
+  /* font-weight: bold; /\* If you want it to be bold *\/ */
+  display: inline-block; /* Needed to add space between the bullet and the text */
+  width: 1em; /* Also needed for space (tweak if needed) */
+  margin-left: -1em; /* Also needed for space (tweak if needed) */
+}
+
+ol li:before {
+    content: "";
+}
+a
+{
+  text-decoration:none;
+}
+
+a.nav
+{
+text-align:center;      
+text-decoration:none;
+color:Gold;
+position:relative;
+padding: 5px 5px 5px 5px;
+}
+a.nav:visited {color:Gold; }
+a.nav:hover
+{
+  background-color:LightGoldenRodYellow;
+  color:Black;
+}
+a.text
+{
+text-decoration:none;
+color:GoldenRod;
+position:relative;
+}
+a.text:hover{color:MidnightBlue;}
+/*a.text:visited:hover{color:GoldenRod;}
+a.text:visited {color:Gold;}*/
+a span{display: none;  font-size:9pt;}
+a.text:hover span, a.nav:hover span
+{ 
+   display:block;
+    position:absolute;
+    top:1.5em; left:-1em;
+// width:15em;
+  white-space:nowrap;
+    border:1px solid #181818;
+    background-color:Silver;
+  color:MidnightBlue;
+    text-align: center;
+ }
+a.intLink{padding-top:50px;}
+a.intText
+{
+color:Gold;
+}
+a.intText:hover{color:Black;}
+
+ul.nav
+{
+margin:0em 5px 0px 2%;
+list-style-type:none;
+list-style-position:outside;
+font-size:100%;
+position:relative;
+}
+ul.nav ul.nav
+{ 
+  display: none;
+  padding:0em 0em 0em 0em;
+//  padding:0em 0em 0em 10px;
+  margin:0em 0em 0em 0em;
+  width:90%;
+  line-height:150%;
+//  border:1px solid MidnightBlue;
+top:-1.5em;
+ }
+
+ul.nav ul.nav a.nav
+{ padding: 0px 5px 0px 5px;
+ }
+
+#main ul.nav
+{
+  margin: 10px 0px 5px 20px;
+line-height: 150%;}
+
+div.tooshort{height:93%} 
+p
+{
+    width:93%;
+    padding: 0px 0px 0px 1em;
+}
+
+td, tr
+{
+padding:5px 10px 5px 10px;
+}
+
+table.bordered
+{
+border-top: 3px solid MidnightBlue;
+border-bottom: 3px solid MidnightBlue;
+ text-align:center;
+border-spacing:0px;
+}
+
+table.index
+{
+width:95%;
+}
+
+table.index tr, table.index td
+{
+padding:20px 50px 20px 30px;
+}
+
+table.list
+{ 
+border-color:MidnightBlue;
+ text-align:center;
+  margin:0.5em 1em 1em 2em;
+//  padding:1em 0em 0em 0em;
+ border-collapse:collapse;
+border-width:4px;
+border-style: ridge;
+ }
+table.list td
+{ 
+    padding:0 15px 0 15px;
+ }
+tr.title
+{ 
+font-weight:bold;
+ }
+tr.even td,tr.odd td
+{
+  padding:55px 20px 25px 20px;
+
+}
+tr.even
+{
+background-color:GhostWhite;
+  padding:25px 20px 25px 20px;
+}
+tr.odd
+{
+background-color:WhiteSmoke;
+  padding:25px 20px 25px 20px;
+}
+img
+{
+  border:0px;
+}
+td img
+{
+  border:0px;
+  height:150px;
+}
+.centered
+{
+  text-align:center;
+}
+.lefted
+{
+  text-align:left;
+}
+.righted
+{
+  text-align:right;
+  padding-right:10px;
+}
+
+textarea { text-align: center; }
+
+fieldset
+{ 
+//border:1px solid MidnightBlue;
+border:none;
+padding:0.5em 0em 0.5em 0em;
+margin-left:auto;
+margin-right:auto;
+//width:55em;
+text-align:left;
+ }
+
+label
+{ 
+width: 5em;
+//float: left;
+text-align: right;
+margin-right: 0.3em;
+ }
+
+#magTables
+{
+  margin-left:auto;
+  margin-right:auto;
+ border-collapse:collapse;
+position:relative;
+
+}
+
+#magTables table
+{
+border-width:4px;
+border-style: ridge;
+text-align:center;
+padding:0.1em 0.3em 0.1em 0.3em;
+margin:0.5em 1em 0.5em 1em;
+position:relative;
+width:80%
+}
+
+pre.quote
+{
+font-family:monospace;
+clear:center;
+background-color:LightGray;
+font-size:85%;
+width:75%;
+position:relative;
+margin-left:auto;
+margin-right:auto;
+}
+
+ul.text
+{
+margin:-0.5em 0px 7px 3%;
+list-style-type:none;
+font-size:95%;
+position:relative;
+margin-right:auto;
+width:100%;
+}
+
+ul.text ul.text
+{
+top:0.3em;
+left:0%;
+font-size:98%;
+}
+
+div.disclaimer
+{
+width:75%;
+font-size:75%;
+text-align:center;
+margin-left:auto;
+margin-right:auto;
+}
