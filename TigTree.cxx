@@ -311,11 +311,6 @@ void
 TigTree::DeleteFormulas()
 {
   //  std::cout << "[TigTree::DeleteFormulas]" << std::endl;
-  // vector<TigDependentObject*>::iterator obj;
-  // for (obj=mFormulas.begin(); obj<mFormulas.end(); ){
-  //   delete * obj;
-  //   obj = mFormulas.erase(obj);
-  // }
   if (mObjects.size() == 0 ) return;
   vector<TigDataObject*>::iterator iObj;
   for (iObj = mObjects.begin(); iObj != mObjects.end();){
